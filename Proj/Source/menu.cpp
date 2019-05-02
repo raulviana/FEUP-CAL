@@ -33,7 +33,7 @@ int mainMenu()
             showPathsMenu();
             break;
         case 3:
-            std::cout << "\nA sair do programa...\n";
+            std::cout << "\nA sair do programa...\n\n";
             break;
         default:
             break;
