@@ -9,6 +9,7 @@
 #include <list>
 #include <limits>
 #include <cmath>
+
 #include "MutablePriorityQueue.h"
 
 using namespace std;
@@ -40,7 +41,7 @@ class Vertex
     void addEdge(Vertex<T> *dest, double w);
     bool removeEdgeTo(Vertex<T> *d);
 
-  public:
+public:
     Vertex(T in);
     bool operator<(Vertex<T> &vertex) const; // // required by MutablePriorityQueue
     T getInfo() const;
@@ -58,7 +59,7 @@ class Edge
 {
     Vertex<T> *dest; // destination vertex
     double weight;   // edge weight
-  public:
+public:
     Edge(Vertex<T> *d, double w);
     friend class Graph<T>;
     friend class Vertex<T>;
@@ -76,7 +77,7 @@ class Graph
     Vertex<T> *findVertex(const T &in) const;
     bool dfsIsDAG(Vertex<T> *v) const;
 
-  public:
+public:
     ~Graph();
     int getNumVertex() const;
     bool addVertex(const T &in);
@@ -386,7 +387,7 @@ vector<T> Graph<T>::topsort() const
 
     if (res.size() != vertexSet.size())
     {
-        cout << "FAIL - O grafo tem ciclos!\n";
+        std::cout << "FAIL - O grafo tem ciclos!\n";
         res.clear();
     }
 

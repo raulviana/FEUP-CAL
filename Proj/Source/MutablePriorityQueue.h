@@ -25,7 +25,7 @@ class MutablePriorityQueue
     void heapifyDown(unsigned i);
     inline void set(unsigned i, T *x);
 
-  public:
+public:
     MutablePriorityQueue();
     void insert(T *x);
     T *extractMin();

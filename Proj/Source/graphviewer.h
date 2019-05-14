@@ -1,11 +1,12 @@
 ﻿#ifndef _GRAPH_VIEWER_H_
 #define _GRAPH_VIEWER_H_
 
-#ifdef linux
-	#include <unistd.h>
+#ifdef __linux__
+#include <unistd.h>
+#include <sys/socket.h>
 #else
-	#include <winsock2.h>
-	#include <Windows.h>
+#include <winsock2.h>
+#include <Windows.h>
 #endif
 
 #include <stdlib.h>
@@ -33,13 +34,14 @@
  * Classe que guarda o grafo e o representa. Todas as suas funções retornam um booleano a indicar
  * se a sua execução decorreu ou não com sucesso.
  */
-class GraphViewer {
- public:
+class GraphViewer
+{
+public:
   /**
    * Variável que guarda a próxima porta que o programa vai usar. O valor inicial é 7772.
    */
   static short port;
-  
+
   /**
    * Construtor que cria um novo grafo e atribui automaticamente a porta.
    * @param width Inteiro que representa a lagura da área do grafo.
@@ -48,7 +50,7 @@ class GraphViewer {
    * determinado pelo programa (true) ou se deve ser determinado pelo utilizador (false).
    */
   GraphViewer(int width, int height, bool port_n);
-  
+
   /**
    * Construtor que cria um novo grafo, utilizando uma porta especificada pelo utilizador para a ligação.
    * @param width Inteiro que representa a lagura da área do grafo.
@@ -59,7 +61,7 @@ class GraphViewer {
    * já usada por outro programa ou pelo sistema.
    */
   GraphViewer(int width, int height, bool dynamic, int port_n);
-  
+
   /**
    * Função que cria a janela para visualização.
    * @param width Largura da janela a criar.
@@ -83,7 +85,7 @@ class GraphViewer {
    * Acrescenta um nó à representação do grafo, numa posição ao critério do programa.
    * @param id Identificador único do nó.
    */
-  bool addNode(int id); 
+  bool addNode(int id);
   /**
    * Acrescenta uma aresta à representação do grafo.
    * @param id Identificador único da aresta.
@@ -103,7 +105,7 @@ class GraphViewer {
    * Remove uma aresta da representação do grafo.
    * @param id Identificador único da aresta a remover.
    */
-  bool removeEdge(int id); 
+  bool removeEdge(int id);
 
   /**
    * Função que define o texto de um nó.
@@ -149,7 +151,7 @@ class GraphViewer {
    * arestas são criadas com a espessura de 1.
    */
   bool setEdgeThickness(int id, int thickness);
-  
+
   /**
    * Função que altera a imagem de fundo do grafo.
    * @param path Caminho para o ficheiro com a imagem.
@@ -176,11 +178,11 @@ class GraphViewer {
    */
   bool rearrange();
 
-#ifdef linux
+#ifdef __linux__
   static pid_t procId;
 #endif
 
- private:
+private:
   int width, height;
   bool isDynamic;
 

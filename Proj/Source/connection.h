@@ -5,7 +5,7 @@
 #include <cstdlib>
 #include <cstring>
 
-#ifdef linux
+#ifdef __linux__
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <sys/types.h>
@@ -19,13 +19,15 @@
 
 using namespace std;
 
-class Connection {
- public:
+class Connection
+{
+public:
   Connection(short port);
 
   bool sendMsg(string msg);
   string readLine();
- private: 
+
+private:
 #ifdef linux
   int sock;
 #else

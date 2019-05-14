@@ -1,5 +1,13 @@
-#include "menu.h"
 #include <iostream>
+#include <sys/types.h>
+#include <dirent.h>
+#include <string.h>
+#include <string>
+#include <vector>
+
+#include "menu.h"
+
+std::vector<std::string> maps;
 
 int startMenu()
 {
@@ -38,6 +46,7 @@ int mainMenu()
         default:
             break;
         }
+
     } while (option != 3);
 
     return 0;
@@ -64,6 +73,7 @@ int dataAreaMenu()
         switch (option)
         {
         case 1:
+            listAvailableMaps();
             break;
         case 2:
             break;
@@ -74,6 +84,7 @@ int dataAreaMenu()
         default:
             break;
         }
+
     } while (option != 5);
 
     return 0;
@@ -104,7 +115,42 @@ int showPathsMenu()
         default:
             break;
         }
+
     } while (option != 3);
 
     return 0;
+}
+
+void listAvailableMaps()
+{
+    int option;
+
+    DIR *dirp = opendir("../Maps");
+    struct dirent *dp;
+
+    while ((dp = readdir(dirp)) != NULL)
+    {
+        if (strcmp(dp->d_name, ".") && strcmp(dp->d_name, ".."))
+        {
+            maps.push_back(dp->d_name);
+        }
+    }
+    closedir(dirp);
+
+    do
+    {
+        std::cout << "\n------------- Mapas Disponíveis -------------\n";
+        std::cout << "---------------------------------------------\n\n";
+
+        for (unsigned int i = 0; i < maps.size(); i++)
+        {
+            std::cout << i + 1 << " - " << maps.at(i) << std::endl;
+        }
+
+        std::cout << (int)maps.size() + 1 << " - Voltar atrás\n\n";
+        std::cout << "---------------------------------------------\n\n";
+        std::cout << "Opção: ";
+        std::cin >> option;
+
+    } while (option != (int)maps.size() + 1);
 }
