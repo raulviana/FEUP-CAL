@@ -1,6 +1,5 @@
 #include <fstream>
 #include <sstream>
-#include <cstdio>
 
 #include "map.h"
 
@@ -40,6 +39,8 @@ void Map::loadNodes(std::string filename)
     double X = 0;
     double Y = 0;
 
+    Node node(idNode, X, Y);
+
     getline(fin, line);
 
     while (!fin.eof())
@@ -58,7 +59,8 @@ void Map::loadNodes(std::string filename)
         it = line.find(")");
         Y = stod(line.substr(0, it));
 
-        cout << idNode << " " << X << " " << Y << endl;
+        node.setNode(idNode, X, Y);
+        map->addVertex(&node);
     }
 
     fin.close();
@@ -93,9 +95,14 @@ void Map::loadEdges(std::string filename)
 
         it = line.find(")");
         idNodeDestiny = stod(line.substr(0, it));
-
-        cout << idNodeOrigin << " " << idNodeDestiny << endl;
     }
 
     fin.close();
+}
+
+Node *Map::findNode() {
+    for (unsigned int i = 0; i < map->getNumVertex; i++) {
+        //if (map->getVertexSet().at(i)->getInfo)
+
+    }
 }

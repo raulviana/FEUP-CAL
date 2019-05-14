@@ -74,7 +74,6 @@ class Graph
     int findVertexIdx(const T &in) const;
 
     void dfsVisit(Vertex<T> *v, vector<T> &res) const;
-    Vertex<T> *findVertex(const T &in) const;
     bool dfsIsDAG(Vertex<T> *v) const;
 
 public:
@@ -89,6 +88,7 @@ public:
     vector<T> topsort() const;
     int maxNewChildren(const T &source, T &inf) const;
     bool isDAG() const;
+    Vertex<T> *findVertex(const T &in) const;
 
     vector<Vertex<T> *> getVertexSet() const;
 
