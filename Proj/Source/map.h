@@ -4,7 +4,6 @@
 #ifndef MAP_H_
 #define MAP_H_
 
-#include <sys/socket.h>
 #include <string>
 
 #include "graphviewer.h"

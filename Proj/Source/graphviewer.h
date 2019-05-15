@@ -163,7 +163,7 @@ public:
    * @param color Nova cor das arestas, utilizar as constantes definidas no graphviewer.h para conveniência.
    */
   bool defineEdgeColor(string color);
-  
+
   /**
    * Função que define a cor global dos nós.
    * @param color Nova cor dos nós, utilizar as constantes definidas no graphviewer.h para conveniência.

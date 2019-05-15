@@ -3,7 +3,7 @@
 
 int main()
 {
-    Map map("Fafe");
+    Map map("Porto");
     startMenu();
     return 0;
 }

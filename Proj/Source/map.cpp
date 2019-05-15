@@ -12,7 +12,7 @@ Map::Map(std::string mapName)
     std::string edgeFile = "../Maps/" + mapName + "/T04_edges_" + mapName + ".txt";
     loadEdges(edgeFile);
     std::string tagFile = "../Maps/" + mapName + "/T04_tags_" + mapName + ".txt";
-    //loadTags(tagFile);
+    loadTags(tagFile);
     //initGraphViewer();
 }
 
@@ -72,15 +72,17 @@ void Map::loadNodes(std::string filename)
     int idNode = 0;
     double X = 0;
     double Y = 0;
-    int counter;
+    int counter = 1;
 
     Node node(idNode, X, Y);
 
-    std::cout << "\n Carregando os Nodes!\n"
-              << endl;
-
     getline(fin, line); // number of nodes
     numberOfNodes = stoi(line);
+
+    std::cout << "\n--------------- Carregamento --------------\n";
+    std::cout << "-------------------------------------------\n\n";
+    std::cout << " Processing " << numberOfNodes << " Nodes ..." << endl
+              << endl;
 
     while (!fin.eof())
     {
@@ -102,8 +104,11 @@ void Map::loadNodes(std::string filename)
         Node *nodee = new Node(idNode, X, Y);
         map->addVertex(nodee);
 
-        //showLoadProgress(counter, numberOfNodes, "nodes");
+        showLoadProgress(counter, numberOfNodes, "Node");
+        counter++;
     }
+
+    std::cout << endl;
 
     fin.close();
 }
@@ -126,11 +131,12 @@ void Map::loadEdges(std::string filename)
     int idNodeDestiny = 0;
     int counter = 1;
 
-    std::cout << "\n Carregando as Edges!\n"
-              << endl;
-
     getline(fin, line); // number of edges
     numberOfEdges = stoi(line);
+
+    std::cout << "\n-------------------------------------------\n\n";
+    std::cout << " Processing " << numberOfEdges << " Edges ..." << endl
+              << endl;
 
     while (!fin.eof())
     {
@@ -154,6 +160,8 @@ void Map::loadEdges(std::string filename)
         counter++;
     }
 
+    std::cout << endl;
+
     fin.close();
 }
 
@@ -172,13 +180,15 @@ void Map::loadTags(std::string filename)
     int numberOfTags;
     int nNodes;
     int idNode = 0;
+    int counter = 1;
     string tag;
-
-    std::cout << "\n Carregando as Tags!\n"
-              << endl;
 
     getline(fin, line); // number of tags
     numberOfTags = stoi(line);
+
+    std::cout << "\n-------------------------------------------\n\n";
+    std::cout << " Processing " << numberOfTags << " Tags ..." << endl
+              << endl;
 
     while (!fin.eof())
     {
@@ -202,7 +212,12 @@ void Map::loadTags(std::string filename)
             node->setTag(tag);
             nNodes--;
         }
+
+        showLoadProgress(counter, numberOfTags, "Tag");
+        counter++;
     }
+
+    std::cout << endl;
 
     fin.close();
 }
@@ -230,11 +245,9 @@ void showLoadProgress(int counter, int number, std::string type)
 {
     double percentage;
 
-    std::cout << "Processing " << number << " " << type << "s ..." << endl << endl;
+    percentage = (100 * counter) / (double)number;
 
-    percentage = (100 * counter) / (double) number;
-
-    std::cout << "\r";
-    std::cout << "[" << type << " " << counter << " of " << number << " ] ";
-    std::cout << fixed << setprecision(2) << percentage << '%' << endl << endl << endl;
+    std::cout << " [" << type << " " << counter << " of " << number << " ] ";
+    std::cout << fixed << setprecision(2) << percentage << '%' << "\r";
+    std::cout.flush();
 }
