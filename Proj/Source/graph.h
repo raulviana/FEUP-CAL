@@ -47,6 +47,7 @@ public:
     T getInfo() const;
     double getDist() const;
     Vertex *getPath() const;
+    vector<Edge<T>> getAdjSet() const;
 
     friend class Graph<T>;
     friend class MutablePriorityQueue<Vertex<T>>;
@@ -61,6 +62,7 @@ class Edge
     double weight;   // edge weight
 public:
     Edge(Vertex<T> *d, double w);
+    Vertex<T> * getDest();
     friend class Graph<T>;
     friend class Vertex<T>;
 };
@@ -89,7 +91,6 @@ public:
     int maxNewChildren(const T &source, T &inf) const;
     bool isDAG() const;
     Vertex<T> *findVertex(const T &in) const;
-
     vector<Vertex<T> *> getVertexSet() const;
 
     // Single source
@@ -135,9 +136,20 @@ Vertex<T> *Vertex<T>::getPath() const
     return this->path;
 }
 
+template <class T>
+vector<Edge<T>> Vertex<T>::getAdjSet() const
+{
+    return this->adj;
+}
+
 /************************* Edge  **************************/
 template <class T>
 Edge<T>::Edge(Vertex<T> *d, double w) : dest(d), weight(w) {}
+
+template <class T>
+Vertex<T> * Edge<T>::getDest() {
+    return this->dest;
+}
 
 /*************************** Graph  **************************/
 template <class T>

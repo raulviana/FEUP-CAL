@@ -68,6 +68,7 @@ public:
    * @param height Altura da janela a criar.
    */
   bool createWindow(int width, int height);
+
   /**
    * Fecha a janela a ser utilizada para visualização.
    */
@@ -81,11 +82,13 @@ public:
    * @param y Posição vertical do nó.
    */
   bool addNode(int id, int x, int y);
+
   /**
    * Acrescenta um nó à representação do grafo, numa posição ao critério do programa.
    * @param id Identificador único do nó.
    */
   bool addNode(int id);
+
   /**
    * Acrescenta uma aresta à representação do grafo.
    * @param id Identificador único da aresta.
@@ -101,6 +104,7 @@ public:
    * @param id Identificador único do nó a a remover.
    */
   bool removeNode(int id);
+
   /**
    * Remove uma aresta da representação do grafo.
    * @param id Identificador único da aresta a remover.
@@ -120,12 +124,32 @@ public:
    * @param label Novo texto da aresta.
    */
   bool setEdgeLabel(int id, string label);
+
   /**
    * Função que define a cor de uma aresta.
    * @param id Identificador único da aresta com a cor a alterar.
    * @param color Nova cor da aresta, utilizar as constantes definidas no graphviewer.h para conveniência.
    */
   bool setEdgeColor(int id, string color);
+
+  /**
+	 * Função que define globalmente se as arestas são desenhadas, ou não, a tracejado.
+	 * Exemplo, para um apontador gv onde foi instanciada a classe GraphViewer:
+	 * gv->defineEdgeDashed(true); faz com que por defeito as arestas sejam desenhadas a tracejado
+	 *
+	 * @param dashed Booleano que representa se as arestas vão estar, ou não, todas a tracejado (o valor por defeito é false).
+	 */
+  bool defineEdgeDashed(bool dashed);
+
+  /**
+	 * Função que define se uma aresta é desenhada, ou não, a tracejado.
+	 * Exemplo, para um apontador gv onde foi instanciada a classe GraphViewer:
+	 * gv->setEdgeDashed(0, false); faz com que a aresta com ID 0 seja desenhada a traço contínuo
+	 *
+	 * @param id Identificador único da aresta com a cor a alterar.
+	 * @param dashed Nova cor da aresta, utilizar as constantes definidas no graphviewer.h para conveniência.
+	 */
+  bool setEdgeDashed(int id, bool dashed);
 
   /**
    * Função que define a cor de um nó.
@@ -139,11 +163,22 @@ public:
    * @param color Nova cor das arestas, utilizar as constantes definidas no graphviewer.h para conveniência.
    */
   bool defineEdgeColor(string color);
+  
   /**
    * Função que define a cor global dos nós.
    * @param color Nova cor dos nós, utilizar as constantes definidas no graphviewer.h para conveniência.
    */
   bool defineVertexColor(string color);
+
+  /**
+	 * Função que define se as arestas do grafo serão desenhadas como curvas ou retas.
+	 * Exemplo, para um apontador gv onde foi instanciada a classe GraphViewer:
+	 * gv->defineEdgeCurved(false); faz com que as arestas sejam desenhadas como retas
+	 *
+	 * @param curved Booleano que representa se as arestas serão curvas (true) ou retas (false), sendo o valor por defeito é true.
+	 */
+  bool defineEdgeCurved(bool curved);
+
   /**
    * Função que define a espessura de uma aresta.
    * @param id Identificador único da aresta com a espessura a alterar.
@@ -151,6 +186,35 @@ public:
    * arestas são criadas com a espessura de 1.
    */
   bool setEdgeThickness(int id, int thickness);
+
+  /**
+	 * Função que define um ícone para um nó.
+	 * Exemplo, para um apontador gv onde foi instanciada a classe GraphViewer:
+	 * gv->defineVertexIcon("icon.gif"); faz com que por defeito os nós, quando desenhados,
+	 * não sejam um círculo, mas sim a imagem icon.gif
+	 *
+	 * @param filepath Caminho do ficheiro a utilizar como novo ícone do nó.
+	 */
+  bool defineVertexIcon(string filepath);
+
+  /**
+	 * Função que define um ícone para um nó.
+	 * Exemplo, para um apontador gv onde foi instanciada a classe GraphViewer:
+	 * gv->setVertexIcon(0, "icon.png"); faz com que o nó, quando desenhado, não seja um círculo, mas sim a imagem icon.png
+	 *
+	 * @param id Identificador único do nó com o ícone a alterar.
+	 * @param filepath Caminho do ficheiro a utilizar como novo ícone do nó.
+	 */
+  bool setVertexIcon(int id, string filepath);
+
+  /**
+	 * Função que define o tamanho global dos nós.
+	 * Exemplo, para um apontador gv onde foi instanciada a classe GraphViewer:
+	 * gv->defineVertexSize(20); modifica o tamanho por defeito dos nós para 20
+	 *
+	 * @param size Nova cor dos nós, utilizar as constantes definidas no graphviewer.h para conveniência.
+	 */
+  bool defineVertexSize(int size);
 
   /**
    * Função que altera a imagem de fundo do grafo.
@@ -165,6 +229,7 @@ public:
    * @param weight Peso associado à aresta.
    */
   bool setEdgeWeight(int id, int weight);
+
   /**
    * Função que define o fluxo de uma aresta na representação do grafo, a ser visualizado
    * como f: valor_do_fluxo, precedido pelo peso e seguido por texto definido pelo utilizador.

@@ -2,12 +2,17 @@
 all: smartDelivery
 
 CFLAGS = -Wall -Wextra -Werror
-OBJECTS = main.o menu.o
+OBJECTS = connection.o node.o graphviewer.o map.o menu.o main.o 
 
 smartDelivery: $(OBJECTS)
 	@g++ $(CFLAGS) -pedantic $(OBJECTS) -o smartDelivery
 
-menu.o main.o: menu.h graph.h MutablePriorityQueue.h
+main.o: menu.h map.h
+menu.o: menu.h
+connection.o: connection.h 
+graphviewer.o: graphviewer.h connection.h  edgetype.h
+map.o: map.h  graphviewer.h graph.h node.h
+node.o: node.h
 
 clean:
 	@rm -f smartDelivery $(OBJECTS)

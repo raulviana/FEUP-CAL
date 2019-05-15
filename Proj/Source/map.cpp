@@ -1,25 +1,57 @@
 #include <fstream>
 #include <sstream>
+#include <algorithm>
 
 #include "map.h"
 
 Map::Map(std::string mapName)
 {
     std::string nodeFile = "../Maps/" + mapName + "/T04_nodes_X_Y_" + mapName + ".txt";
-    //setupGraphViewer();
     loadNodes(nodeFile);
     std::string edgeFile = "../Maps/" + mapName + "/T04_edges_" + mapName + ".txt";
     loadEdges(edgeFile);
+    std::string tagFile = "../Maps/" + mapName + "/T04_tags_" + mapName + ".txt";
+    loadTags(tagFile);
+    initGraphViewer();
 }
 
-void Map::setupGraphViewer()
+void Map::initGraphViewer()
 {
-    GraphViewer *gv = new GraphViewer(1000, 600, false);
+    GraphViewer *gv = new GraphViewer(1000, 700, true);
 
-    gv->createWindow(1000, 600);
+    gv->createWindow(1200, 800);
 
     gv->defineEdgeColor("blue");
     gv->defineVertexColor("yellow");
+
+    gv->defineVertexSize(2);
+
+    int idNode = 0;
+    int idEdge = 1;
+    double X = 0;
+    double Y = 0;
+
+    for (int i = 0; i < map->getNumVertex(); i++)
+    {
+        idNode = map->getVertexSet().at(i)->getInfo()->getIdNode();
+        X = map->getVertexSet().at(i)->getInfo()->getX();
+        Y = map->getVertexSet().at(i)->getInfo()->getY();
+        gv->addNode(idNode, X, Y);
+    }
+
+    for (int i = 0; i < map->getNumVertex(); i++)
+    {
+        for (int j = 0; j < map->getVertexSet().at(i)->getAdjSet().size(); j++)
+        {
+            gv->addEdge(idEdge,
+                        map->getVertexSet().at(i)->getInfo()->getIdNode(),
+                        map->getVertexSet().at(i)->getAdjSet().at(j).getDest()->getInfo()->getIdNode(),
+                        EdgeType::DIRECTED); // edgetype still coiso
+            idEdge++;
+        }
+    }
+
+    gv->rearrange();
 }
 
 void Map::loadNodes(std::string filename)
@@ -41,7 +73,10 @@ void Map::loadNodes(std::string filename)
 
     Node node(idNode, X, Y);
 
-    getline(fin, line);
+    std::cout << "\n Carregando os Nodes!\n"
+              << endl;
+
+    getline(fin, line); // number of nodes
 
     while (!fin.eof())
     {
@@ -59,8 +94,9 @@ void Map::loadNodes(std::string filename)
         it = line.find(")");
         Y = stod(line.substr(0, it));
 
-        node.setNode(idNode, X, Y);
-        map->addVertex(&node);
+        /* add nodes to the graph */
+        Node *nodee = new Node(idNode, X, Y);
+        map->addVertex(nodee);
     }
 
     fin.close();
@@ -81,8 +117,12 @@ void Map::loadEdges(std::string filename)
     int it = 0;
     int idNodeOrigin = 0;
     int idNodeDestiny = 0;
+    //int i = 0;
 
-    getline(fin, line);
+    std::cout << "\n Carregando as Edges!\n"
+              << endl;
+
+    getline(fin, line); // number of edges
 
     while (!fin.eof())
     {
@@ -95,14 +135,83 @@ void Map::loadEdges(std::string filename)
 
         it = line.find(")");
         idNodeDestiny = stod(line.substr(0, it));
+
+        Node *nodeOrigin = findNode(idNodeDestiny);
+        Node *nodeDestiny = findNode(idNodeOrigin);
+
+        /* add edge to the graph */
+        map->addEdge(nodeOrigin, nodeDestiny, 0);
+
+        //std::cout << i << endl;
+        //i++;
     }
 
     fin.close();
 }
 
-Node *Map::findNode() {
-    for (unsigned int i = 0; i < map->getNumVertex; i++) {
-        //if (map->getVertexSet().at(i)->getInfo)
+void Map::loadTags(std::string filename)
+{
+    std::ifstream fin;
+    fin.open(filename);
 
+    if (!fin)
+    {
+        cerr << "Unable to open file " << filename << endl;
+        exit(1); // call system to stop
     }
+
+    std::string line;
+    int nNodes;
+    int idNode = 0;
+    string tag;
+
+    std::cout << "\n Carregando as Tags!\n"
+              << endl;
+
+    getline(fin, line); // number of tags
+
+    while (!fin.eof())
+    {
+        getline(fin, tag); // tagname
+
+        getline(fin, line); // number of nodes with this tag
+        nNodes = stoi(line);
+
+        while (nNodes > 0)
+        {
+            getline(fin, line);
+            idNode = stoi(line);
+            Node *node = findNode(idNode);
+
+            if (node == NULL)
+            {
+                std::cout << "N existe node\n";
+                exit(1);
+            }
+
+            node->setTag(tag);
+            nNodes--;
+        }
+    }
+
+    fin.close();
+}
+
+Node *Map::findNode(int idNode)
+{
+    Node *node = NULL;
+    auto vec = map->getVertexSet();
+    auto first = vec.begin();
+
+    while (first != vec.end())
+    {
+        if ((*first)->getInfo()->getIdNode() == idNode)
+        {
+            node = (*first)->getInfo();
+            break;
+        }
+        ++first;
+    }
+
+    return node;
 }

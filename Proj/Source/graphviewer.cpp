@@ -172,6 +172,27 @@ bool GraphViewer::setEdgeColor(int k, string color)
   return con->sendMsg(str);
 }
 
+bool GraphViewer::defineEdgeDashed(bool dashed) {
+	char buff[200];
+	sprintf(buff, "defineEdgeDashed %s\n", dashed? "true" : "false");
+	string str(buff);
+	return con->sendMsg(str);
+}
+
+bool GraphViewer::setEdgeDashed(int k, bool dashed) {
+	char buff[200];
+	sprintf(buff, "setEdgeDashed %d %s\n", k, dashed? "true" : "false");
+	string str(buff);
+	return con->sendMsg(str);
+}
+
+bool GraphViewer::defineEdgeCurved(bool curved) {
+	char buff[200];
+	sprintf(buff, "defineEdgeCurved %s\n", curved? "true" : "false");
+	string str(buff);
+	return con->sendMsg(str);
+}
+
 bool GraphViewer::setEdgeThickness(int k, int thickness)
 {
   char buff[200];
@@ -194,6 +215,27 @@ bool GraphViewer::setVertexColor(int k, string color)
   sprintf(buff, "setVertexColor %d %s\n", k, color.c_str());
   string str(buff);
   return con->sendMsg(str);
+}
+
+bool GraphViewer::defineVertexIcon(string filepath) {
+	char buff[200];
+	sprintf(buff, "defineVertexIcon %s\n", filepath.c_str());
+	string str(buff);
+	return con->sendMsg(str);
+}
+
+bool GraphViewer::setVertexIcon(int k, string filepath) {
+	char buff[200];
+	sprintf(buff, "setVertexIcon %d %s\n", k, filepath.c_str());
+	string str(buff);
+	return con->sendMsg(str);
+}
+
+bool GraphViewer::defineVertexSize(int size) {
+	char buff[200];
+	sprintf(buff, "defineVertexSize %d\n", size);
+	string str(buff);
+	return con->sendMsg(str);
 }
 
 bool GraphViewer::setBackground(string path)

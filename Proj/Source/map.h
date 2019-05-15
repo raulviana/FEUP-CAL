@@ -14,14 +14,15 @@
 class Map
 {
 private:
-    Graph<Node *> *map;
+    Graph<Node *> *map = (Graph<Node *> *)malloc(4096);
 
 public:
     Map(std::string mapName);
-    void setupGraphViewer();
+    void initGraphViewer();
     void loadNodes(std::string filename);
     void loadEdges(std::string filename);
-    Node *findNode();
+    void loadTags(std::string filename);
+    Node *findNode(int idNode);
 };
 
 #endif /* MAP_H_ */
