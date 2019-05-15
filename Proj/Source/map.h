@@ -25,4 +25,6 @@ public:
     Node *findNode(int idNode);
 };
 
+void showLoadProgress(int counter, int number, std::string type);
+
 #endif /* MAP_H_ */

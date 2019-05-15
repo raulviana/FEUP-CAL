@@ -1,6 +1,7 @@
 #include <fstream>
 #include <sstream>
 #include <algorithm>
+#include <iomanip>
 
 #include "map.h"
 
@@ -11,8 +12,8 @@ Map::Map(std::string mapName)
     std::string edgeFile = "../Maps/" + mapName + "/T04_edges_" + mapName + ".txt";
     loadEdges(edgeFile);
     std::string tagFile = "../Maps/" + mapName + "/T04_tags_" + mapName + ".txt";
-    loadTags(tagFile);
-    initGraphViewer();
+    //loadTags(tagFile);
+    //initGraphViewer();
 }
 
 void Map::initGraphViewer()
@@ -61,15 +62,17 @@ void Map::loadNodes(std::string filename)
 
     if (!fin)
     {
-        cerr << "Unable to open file " << filename << endl;
+        cerr << "Unable to open file! " << filename << endl;
         exit(1); // call system to stop
     }
 
     std::string line;
+    int numberOfNodes;
     int it = 0;
     int idNode = 0;
     double X = 0;
     double Y = 0;
+    int counter;
 
     Node node(idNode, X, Y);
 
@@ -77,6 +80,7 @@ void Map::loadNodes(std::string filename)
               << endl;
 
     getline(fin, line); // number of nodes
+    numberOfNodes = stoi(line);
 
     while (!fin.eof())
     {
@@ -97,6 +101,8 @@ void Map::loadNodes(std::string filename)
         /* add nodes to the graph */
         Node *nodee = new Node(idNode, X, Y);
         map->addVertex(nodee);
+
+        //showLoadProgress(counter, numberOfNodes, "nodes");
     }
 
     fin.close();
@@ -109,20 +115,22 @@ void Map::loadEdges(std::string filename)
 
     if (!fin)
     {
-        cerr << "Unable to open file " << filename << endl;
+        cerr << "Unable to open file! " << filename << endl;
         exit(1); // call system to stop
     }
 
     std::string line;
+    int numberOfEdges;
     int it = 0;
     int idNodeOrigin = 0;
     int idNodeDestiny = 0;
-    //int i = 0;
+    int counter = 1;
 
     std::cout << "\n Carregando as Edges!\n"
               << endl;
 
     getline(fin, line); // number of edges
+    numberOfEdges = stoi(line);
 
     while (!fin.eof())
     {
@@ -142,8 +150,8 @@ void Map::loadEdges(std::string filename)
         /* add edge to the graph */
         map->addEdge(nodeOrigin, nodeDestiny, 0);
 
-        //std::cout << i << endl;
-        //i++;
+        showLoadProgress(counter, numberOfEdges, "Edge");
+        counter++;
     }
 
     fin.close();
@@ -156,11 +164,12 @@ void Map::loadTags(std::string filename)
 
     if (!fin)
     {
-        cerr << "Unable to open file " << filename << endl;
+        cerr << "Unable to open file! " << filename << endl;
         exit(1); // call system to stop
     }
 
     std::string line;
+    int numberOfTags;
     int nNodes;
     int idNode = 0;
     string tag;
@@ -169,6 +178,7 @@ void Map::loadTags(std::string filename)
               << endl;
 
     getline(fin, line); // number of tags
+    numberOfTags = stoi(line);
 
     while (!fin.eof())
     {
@@ -185,7 +195,7 @@ void Map::loadTags(std::string filename)
 
             if (node == NULL)
             {
-                std::cout << "N existe node\n";
+                std::cout << "Non-existent node!\n";
                 exit(1);
             }
 
@@ -214,4 +224,17 @@ Node *Map::findNode(int idNode)
     }
 
     return node;
+}
+
+void showLoadProgress(int counter, int number, std::string type)
+{
+    double percentage;
+
+    std::cout << "Processing " << number << " " << type << "s ..." << endl << endl;
+
+    percentage = (100 * counter) / (double) number;
+
+    std::cout << "\r";
+    std::cout << "[" << type << " " << counter << " of " << number << " ] ";
+    std::cout << fixed << setprecision(2) << percentage << '%' << endl << endl << endl;
 }
