@@ -3,7 +3,7 @@
 #include <sstream>
 
 #ifdef __linux__
-pid_t GraphViewer::procId = NULL;
+pid_t GraphViewer::procId = (pid_t) NULL;
 #endif
 short GraphViewer::port = 7772;
 
@@ -23,7 +23,7 @@ void GraphViewer::initialize(int width, int height, bool dynamic, int port_n)
   this->width = width;
   this->height = height;
   this->isDynamic = dynamic;
-  string command = "java -jar GraphViewerController.jar";
+  string command = "java -jar ../GraphViewerController.jar";
   std::stringstream ss;
   ss << port_n;
   string port_string = ss.str();

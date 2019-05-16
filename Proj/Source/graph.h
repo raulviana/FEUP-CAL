@@ -60,9 +60,12 @@ class Edge
 {
     Vertex<T> *dest; // destination vertex
     double weight;   // edge weight
+    bool undirected;
 public:
     Edge(Vertex<T> *d, double w);
     Vertex<T> * getDest();
+    bool isUndirected();
+    void setUndirected(bool dir);
     friend class Graph<T>;
     friend class Vertex<T>;
 };
@@ -144,11 +147,23 @@ vector<Edge<T>> Vertex<T>::getAdjSet() const
 
 /************************* Edge  **************************/
 template <class T>
-Edge<T>::Edge(Vertex<T> *d, double w) : dest(d), weight(w) {}
+Edge<T>::Edge(Vertex<T> *d, double w) : dest(d), weight(w) {
+    this->undirected = false;
+}
 
 template <class T>
 Vertex<T> * Edge<T>::getDest() {
     return this->dest;
+}
+
+template <class T>
+bool Edge<T>::isUndirected() {
+    return this->undirected;
+}
+
+template <class T>
+void Edge<T>::setUndirected(bool dir) {
+    this->undirected = dir;
 }
 
 /*************************** Graph  **************************/

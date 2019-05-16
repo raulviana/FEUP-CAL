@@ -22,6 +22,8 @@ public:
     void loadEdges(std::string filename);
     void loadTags(std::string filename);
     Node *findNode(int idNode);
+    void removeExtraEdges ();
+    void removeNotConnectedNodes();
 };
 
 void showLoadProgress(int counter, int number, std::string type);

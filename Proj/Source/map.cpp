@@ -9,18 +9,23 @@ Map::Map(std::string mapName)
 {
     std::string nodeFile = "../Maps/" + mapName + "/T04_nodes_X_Y_" + mapName + ".txt";
     loadNodes(nodeFile);
+
     std::string edgeFile = "../Maps/" + mapName + "/T04_edges_" + mapName + ".txt";
     loadEdges(edgeFile);
     std::string tagFile = "../Maps/" + mapName + "/T04_tags_" + mapName + ".txt";
     loadTags(tagFile);
-    //initGraphViewer();
+        cout << "antes: " << map->getNumVertex() << endl;
+    removeNotConnectedNodes();
+    cout << "depois: " << map->getNumVertex() << endl;
+    removeExtraEdges();
+    initGraphViewer();
 }
 
 void Map::initGraphViewer()
 {
-    GraphViewer *gv = new GraphViewer(1000, 700, true);
+    GraphViewer *gv = new GraphViewer(2000, 1000, true);
 
-    gv->createWindow(1200, 800);
+    gv->createWindow(1400, 800);
 
     gv->defineEdgeColor("blue");
     gv->defineVertexColor("yellow");
@@ -250,4 +255,70 @@ void showLoadProgress(int counter, int number, std::string type)
     std::cout << " [" << type << " " << counter << " of " << number << " ] ";
     std::cout << fixed << setprecision(2) << percentage << '%' << "\r";
     std::cout.flush();
+}
+
+void Map::removeExtraEdges (){
+
+    auto vec = map->getVertexSet();
+    auto first = vec.begin();
+
+    while (first != vec.end())
+    {
+        auto vec2 = (*first)->getAdjSet();
+        auto second = vec2.begin();    
+
+        while (second != vec2.end())
+        {
+            auto vec3 = (*second).getDest()->getAdjSet();
+            auto third = vec3.begin();
+
+            while (third != vec3.end())
+            {
+                if ((*third).getDest()->getInfo()->getIdNode() == (*first)->getInfo()->getIdNode())
+                {
+                    cout << "here\n";
+                    map->removeEdge((*first)->getInfo(), (*third).getDest()->getInfo());
+                    (*second).setUndirected(true);
+                    break;
+                }
+                ++third;
+            }
+            
+            ++second;
+        }
+        ++first;
+    }
+}
+
+void Map::removeNotConnectedNodes (){ 
+    auto vec = map->getVertexSet();
+    auto first = vec.begin();
+
+    while (first != vec.end())
+    {
+        if ((*first)->getAdjSet().size() == 0)
+        {
+            map->removeVertex((*first)->getInfo());
+        }
+        ++first;
+    }
+
+    vec = map->getVertexSet();
+    first = vec.begin();
+
+    while (first != vec.end())
+    {
+        auto vec2 = (*first)->getAdjSet();
+        auto second = vec2.begin();    
+
+        while (second != vec2.end())
+        {
+            if ((*second).getDest()->getInfo()->getIdNode() == (*first)->getInfo()->getIdNode()){
+                cout << "here2" << endl;
+                map->removeEdge((*first)->getInfo(), (*first)->getInfo());
+            }
+            second++;
+        }
+        first++;
+    }
 }
