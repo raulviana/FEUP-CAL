@@ -9,55 +9,89 @@ Map::Map(std::string mapName)
 {
     std::string nodeFile = "../Maps/" + mapName + "/T04_nodes_X_Y_" + mapName + ".txt";
     loadNodes(nodeFile);
-
     std::string edgeFile = "../Maps/" + mapName + "/T04_edges_" + mapName + ".txt";
     loadEdges(edgeFile);
     std::string tagFile = "../Maps/" + mapName + "/T04_tags_" + mapName + ".txt";
     loadTags(tagFile);
-        cout << "antes: " << map->getNumVertex() << endl;
+
+    //cout << "antes: " << map->getNumVertex() << endl;
     removeNotConnectedNodes();
-    cout << "depois: " << map->getNumVertex() << endl;
+    //cout << "depois: " << map->getNumVertex() << endl;
     removeExtraEdges();
     initGraphViewer();
 }
 
 void Map::initGraphViewer()
 {
-    GraphViewer *gv = new GraphViewer(2000, 1000, true);
+    double graphHeight = map->getLimitTop() - map->getLimitBot();
+    double graphWidth = map->getLimitRight() - map->getLimitLeft();
 
-    gv->createWindow(1400, 800);
+    int windowHeight = 800;
+    int windowWidth = max((int)(windowHeight * graphWidth / graphHeight), 800);
+    GraphViewer *gv = new GraphViewer(windowWidth, windowHeight, false);
+
+    gv->createWindow(windowWidth, windowHeight);
 
     gv->defineEdgeColor("blue");
     gv->defineVertexColor("yellow");
 
-    gv->defineVertexSize(2);
+    gv->defineVertexSize(5);
 
+    loadNodesToGraphViewer(gv, graphHeight, graphWidth, windowHeight, windowWidth);
+    loadEdgesToGraphViewer(gv);
+
+    gv->rearrange();
+}
+
+void Map::loadNodesToGraphViewer(GraphViewer *gv, double graphHeight, double graphWidth, int windowHeight, int windowWidth)
+{
     int idNode = 0;
-    int idEdge = 1;
     double X = 0;
     double Y = 0;
 
     for (int i = 0; i < map->getNumVertex(); i++)
     {
         idNode = map->getVertexSet().at(i)->getInfo()->getIdNode();
-        X = map->getVertexSet().at(i)->getInfo()->getX();
-        Y = map->getVertexSet().at(i)->getInfo()->getY();
-        gv->addNode(idNode, X, Y);
+        X = (map->getVertexSet().at(i)->getInfo()->getX() - map->getLimitLeft()) / graphWidth;
+        Y = 1.0 - ((map->getVertexSet().at(i)->getInfo()->getY() - map->getLimitBot()) / graphHeight);
+
+        gv->addNode(idNode, X * windowWidth, Y * windowHeight);
     }
+}
+
+void Map::loadEdgesToGraphViewer(GraphViewer *gv)
+{
+    int idEdge = 1;
+    int idNode1 = 0;
+    int idNode2 = 0;
 
     for (int i = 0; i < map->getNumVertex(); i++)
     {
         for (int j = 0; j < map->getVertexSet().at(i)->getAdjSet().size(); j++)
         {
-            gv->addEdge(idEdge,
-                        map->getVertexSet().at(i)->getInfo()->getIdNode(),
-                        map->getVertexSet().at(i)->getAdjSet().at(j).getDest()->getInfo()->getIdNode(),
-                        EdgeType::DIRECTED); // edgetype still coiso
+            idNode1 = map->getVertexSet().at(i)->getInfo()->getIdNode();
+            idNode2 = map->getVertexSet().at(i)->getAdjSet().at(j).getDest()->getInfo()->getIdNode();
+
+            if (map->getVertexSet().at(i)->getAdjSet().at(j).isUndirected())
+            {
+                gv->addEdge(idEdge,
+                            idNode1,
+                            idNode2,
+                            EdgeType::UNDIRECTED);
+                cout << "meeeeeeeeeeeeeee";
+            }
+            else
+            {
+                gv->addEdge(idEdge,
+                            idNode1,
+                            idNode2,
+                            EdgeType::DIRECTED);
+            }
+
+            gv->setEdgeWeight(idEdge, map->getVertexSet().at(i)->getAdjSet().at(j).getWeight());
             idEdge++;
         }
     }
-
-    gv->rearrange();
 }
 
 void Map::loadNodes(std::string filename)
@@ -159,7 +193,7 @@ void Map::loadEdges(std::string filename)
         Node *nodeDestiny = findNode(idNodeOrigin);
 
         /* add edge to the graph */
-        map->addEdge(nodeOrigin, nodeDestiny, 0);
+        map->addEdge(nodeOrigin, nodeDestiny, nodeOrigin->getDistanceToAnotherNode(nodeDestiny));
 
         showLoadProgress(counter, numberOfEdges, "Edge");
         counter++;
@@ -246,26 +280,15 @@ Node *Map::findNode(int idNode)
     return node;
 }
 
-void showLoadProgress(int counter, int number, std::string type)
+void Map::removeExtraEdges()
 {
-    double percentage;
-
-    percentage = (100 * counter) / (double)number;
-
-    std::cout << " [" << type << " " << counter << " of " << number << " ] ";
-    std::cout << fixed << setprecision(2) << percentage << '%' << "\r";
-    std::cout.flush();
-}
-
-void Map::removeExtraEdges (){
-
     auto vec = map->getVertexSet();
     auto first = vec.begin();
 
     while (first != vec.end())
     {
         auto vec2 = (*first)->getAdjSet();
-        auto second = vec2.begin();    
+        auto second = vec2.begin();
 
         while (second != vec2.end())
         {
@@ -276,21 +299,22 @@ void Map::removeExtraEdges (){
             {
                 if ((*third).getDest()->getInfo()->getIdNode() == (*first)->getInfo()->getIdNode())
                 {
-                    cout << "here\n";
+                    //cout << "here\n";
                     map->removeEdge((*first)->getInfo(), (*third).getDest()->getInfo());
                     (*second).setUndirected(true);
                     break;
                 }
                 ++third;
             }
-            
+
             ++second;
         }
         ++first;
     }
 }
 
-void Map::removeNotConnectedNodes (){ 
+void Map::removeNotConnectedNodes()
+{
     auto vec = map->getVertexSet();
     auto first = vec.begin();
 
@@ -309,16 +333,28 @@ void Map::removeNotConnectedNodes (){
     while (first != vec.end())
     {
         auto vec2 = (*first)->getAdjSet();
-        auto second = vec2.begin();    
+        auto second = vec2.begin();
 
         while (second != vec2.end())
         {
-            if ((*second).getDest()->getInfo()->getIdNode() == (*first)->getInfo()->getIdNode()){
-                cout << "here2" << endl;
+            if ((*second).getDest()->getInfo()->getIdNode() == (*first)->getInfo()->getIdNode())
+            {
+                //cout << "here2" << endl;
                 map->removeEdge((*first)->getInfo(), (*first)->getInfo());
             }
             second++;
         }
         first++;
     }
+}
+
+void showLoadProgress(int counter, int number, std::string type)
+{
+    double percentage;
+
+    percentage = (100 * counter) / (double)number;
+
+    std::cout << " [" << type << " " << counter << " of " << number << " ] ";
+    std::cout << fixed << setprecision(2) << percentage << '%' << "\r";
+    std::cout.flush();
 }

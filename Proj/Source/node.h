@@ -21,6 +21,7 @@ public:
     int getIdNode();
     double getX();
     double getY();
+    double getDistanceToAnotherNode(Node *node);
     std::string getTag();
 };
 

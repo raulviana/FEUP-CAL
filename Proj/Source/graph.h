@@ -61,9 +61,11 @@ class Edge
     Vertex<T> *dest; // destination vertex
     double weight;   // edge weight
     bool undirected;
+
 public:
     Edge(Vertex<T> *d, double w);
-    Vertex<T> * getDest();
+    Vertex<T> *getDest();
+    double getWeight();
     bool isUndirected();
     void setUndirected(bool dir);
     friend class Graph<T>;
@@ -77,6 +79,11 @@ class Graph
     double **W = nullptr;          // dist
     int **P = nullptr;             // path
     int findVertexIdx(const T &in) const;
+
+    double limitTop;
+    double limitLeft;
+    double limitBot;
+    double limitRight;
 
     void dfsVisit(Vertex<T> *v, vector<T> &res) const;
     bool dfsIsDAG(Vertex<T> *v) const;
@@ -95,6 +102,11 @@ public:
     bool isDAG() const;
     Vertex<T> *findVertex(const T &in) const;
     vector<Vertex<T> *> getVertexSet() const;
+
+    double getLimitTop();
+    double getLimitLeft();
+    double getLimitBot();
+    double getLimitRight();
 
     // Single source
     void dijkstraShortestPath(const T &s);
@@ -147,22 +159,32 @@ vector<Edge<T>> Vertex<T>::getAdjSet() const
 
 /************************* Edge  **************************/
 template <class T>
-Edge<T>::Edge(Vertex<T> *d, double w) : dest(d), weight(w) {
+Edge<T>::Edge(Vertex<T> *d, double w) : dest(d), weight(w)
+{
     this->undirected = false;
 }
 
 template <class T>
-Vertex<T> * Edge<T>::getDest() {
+Vertex<T> *Edge<T>::getDest()
+{
     return this->dest;
 }
 
 template <class T>
-bool Edge<T>::isUndirected() {
+double Edge<T>::getWeight()
+{
+    return this->weight;
+}
+
+template <class T>
+bool Edge<T>::isUndirected()
+{
     return this->undirected;
 }
 
 template <class T>
-void Edge<T>::setUndirected(bool dir) {
+void Edge<T>::setUndirected(bool dir)
+{
     this->undirected = dir;
 }
 
@@ -178,6 +200,18 @@ vector<Vertex<T> *> Graph<T>::getVertexSet() const
 {
     return vertexSet;
 }
+
+template <class T>
+double Graph<T>::getLimitTop() { return this->limitTop; }
+
+template <class T>
+double Graph<T>::getLimitLeft() { return this->limitLeft; }
+
+template <class T>
+double Graph<T>::getLimitBot() { return this->limitBot; }
+
+template <class T>
+double Graph<T>::getLimitRight() { return this->limitRight; }
 
 /*
  * Auxiliary function to find a vertex with a given content.
@@ -200,6 +234,29 @@ bool Graph<T>::addVertex(const T &in)
 {
     if (findVertex(in) != NULL)
         return false;
+
+    if (getNumVertex() == 0)
+    {
+        this->limitTop = in->getY();
+        ;
+        this->limitLeft = in->getX();
+        ;
+        this->limitBot = in->getY();
+        ;
+        this->limitRight = in->getX();
+        ;
+    }
+    else
+    {
+        if (in->getX() > limitRight)
+            limitRight = in->getX();
+        else if (in->getX() < limitLeft)
+            limitLeft = in->getX();
+        if (in->getY() > limitTop)
+            limitTop = in->getY();
+        else if (in->getY() < limitBot)
+            limitBot = in->getY();
+    }
 
     vertexSet.push_back(new Vertex<T>(in));
     return true;
