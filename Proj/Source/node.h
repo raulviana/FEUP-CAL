@@ -15,6 +15,7 @@ private:
     std::string tag;
 
 public:
+    Node();
     Node(int idNode, double X, double Y);
     void setNode(int idNode, double X, double Y);
     void setTag(std::string tag);

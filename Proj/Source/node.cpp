@@ -1,6 +1,8 @@
 #include "node.h"
 #include "cmath"
 
+Node::Node(){};
+
 Node::Node(int idNode, double X, double Y)
 {
     this->idNode = idNode;

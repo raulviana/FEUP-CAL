@@ -45,6 +45,7 @@ void Map::initGraphViewer()
 
 void Map::loadNodesToGraphViewer(GraphViewer *gv, double graphHeight, double graphWidth, int windowHeight, int windowWidth)
 {
+
     int idNode = 0;
     double X = 0;
     double Y = 0;
@@ -55,7 +56,7 @@ void Map::loadNodesToGraphViewer(GraphViewer *gv, double graphHeight, double gra
         X = (map->getVertexSet().at(i)->getInfo()->getX() - map->getLimitLeft()) / graphWidth;
         Y = 1.0 - ((map->getVertexSet().at(i)->getInfo()->getY() - map->getLimitBot()) / graphHeight);
 
-        gv->addNode(idNode, X * windowWidth, Y * windowHeight);
+        gv->addNode(idNode, X * windowWidth * 5, Y * windowHeight*5);
     }
 }
 
