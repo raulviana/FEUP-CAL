@@ -3,11 +3,11 @@
 #include "delivery.h"
 
 
-Delivery::Delivery(string recipientName, float contentValue, float volume, Node destiny, int invoiceNumber){
+Delivery::Delivery(string recipientName, float contentValue, int volume, int node, int invoiceNumber){
      recipientName = recipientName; 
      contentValue = contentValue;
      volume = volume;
-     destiny = destiny;
+     node = Node;
      invoiceNumber = invoiceNumber;
 }
 
@@ -23,8 +23,8 @@ float Delivery::getvolume(){
      return volume;
 }
 
-Node Delivery::getdestiny(){
-     return destiny;
+int Delivery::getNode(){
+     return Node;
 } 
 
 int Delivery::getinvoiceNumber(){

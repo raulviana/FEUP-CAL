@@ -12,17 +12,17 @@ class Delivery{
     private:
         std::string recipientName;
         float contentValue;
-        float volume;
-        Node destiny;  //Nao tenho a certeza se será asim, poseria ser Vertex? 
+        int volume;
+        int Node;  //Nao tenho a certeza se será asim, poseria ser Vertex? 
         int invoiceNumber;
 
     public:
-        Delivery(string recipientName, float contentValue, float volume, Node destiny, int invoiceNumber);
+        Delivery(string recipientName, float contentValue, int volume, int Node, int invoiceNumber);
         ~Delivery();
         std::string getrecipientName();
         float getcontentValue();
         float getvolume();
-        Node getdestiny();  //Nao tenho a certeza se será asim, poseria ser Vertex? 
+        int getNode();  //Nao tenho a certeza se será asim, poseria ser Vertex? 
         int getinvoiceNumber();
 };
 
