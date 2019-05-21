@@ -9,22 +9,25 @@
 #include "graphviewer.h"
 #include "graph.h"
 #include "node.h"
+#include "delivery.h"
 
 class Map
 {
 private:
     Graph<Node *> *map = (Graph<Node *> *)malloc(4096);
+    vector<Delivery *> deliveries;
 
 public:
-    Map(std::string mapName);
+    Map();
+    void loadMap(std::string mapName);
     void initGraphViewer();
     void loadNodesToGraphViewer(GraphViewer *gv, double graphHeight, double graphWidth, int windowHeight, int windowWidth);
     void loadEdgesToGraphViewer(GraphViewer *gv);
     void loadNodes(std::string filename);
     void loadEdges(std::string filename);
     void loadTags(std::string filename);
+    void loadDeliveries(std::string filename);
     Node *findNode(int idNode);
-    void removeExtraEdges();
     void removeNotConnectedNodes();
 };
 

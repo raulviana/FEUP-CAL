@@ -1,33 +1,46 @@
-
-
 #include "delivery.h"
 
-
-Delivery::Delivery(string recipientName, float contentValue, int volume, int node, int invoiceNumber){
-     recipientName = recipientName; 
-     contentValue = contentValue;
-     volume = volume;
-     node = Node;
-     invoiceNumber = invoiceNumber;
+Delivery::Delivery(std::string recipientName, double contentValue, double volume, int node, int invoiceNumber)
+{
+    this->recipientName = recipientName;
+    this->contentValue = contentValue;
+    this->volume = volume;
+    this->node = node;
+    this->invoiceNumber = invoiceNumber;
 }
 
-std::string Delivery::getrecipientName(){
-     return recipientName;
+std::string Delivery::getrecipientName()
+{
+    return recipientName;
 }
 
-float Delivery::getcontentValue(){
-     return contentValue;
+double Delivery::getcontentValue()
+{
+    return contentValue;
 }
 
-float Delivery::getvolume(){
-     return volume;
+double Delivery::getvolume()
+{
+    return volume;
 }
 
-int Delivery::getNode(){
-     return Node;
-} 
-
-int Delivery::getinvoiceNumber(){
-     return invoiceNumber;
+int Delivery::getNode()
+{
+    return node;
 }
-   
+
+int Delivery::getinvoiceNumber()
+{
+    return invoiceNumber;
+}
+
+/*
+//MUdar para class NOde???? !!!!!Not tested!!!!!!!!!
+bool IsReachable(vector<Node> res, Node deliveryPoint) {
+    for (auto i = 0; i < res.size(); i++) {
+        if (deliveryPoint == res.at(i))
+            return true;
+        else
+            return false;
+    }
+}*/

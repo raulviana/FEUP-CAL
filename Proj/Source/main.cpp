@@ -3,7 +3,6 @@
 
 int main()
 {
-    Map map("Fafe");
     startMenu();
     return 0;
 }

@@ -1,18 +1,19 @@
-#include <iostream>
-#include <sys/types.h>
 #include <dirent.h>
 #include <string.h>
+#include <sys/types.h>
+#include <iostream>
 #include <string>
 #include <vector>
 
 #include "menu.h"
+#include "map.h"
 
-std::vector<std::string> maps;
+std::string mapOption = "";
+Map *map = new Map();
 
 int startMenu()
 {
     mainMenu();
-
     return 0;
 }
 
@@ -24,9 +25,11 @@ int mainMenu()
     {
         std::cout << "\n-------------- Menu Principal --------------\n";
         std::cout << "--------------------------------------------\n\n";
-        std::cout << "1 - Alterar Dados da Área de Influência\n";
-        std::cout << "2 - Visualização dos Percursos\n";
-        std::cout << "3 - Sair\n\n";
+        std::cout << "0 - Sair\n";
+        std::cout << "--------\n";
+        std::cout << "1 - Escolher Mapa da Área de Influência\n";
+        std::cout << "2 - Alterar Dados da Área de Influência\n";
+        std::cout << "3 - Visualização dos Percursos\n\n";
         std::cout << "--------------------------------------------\n\n";
 
         std::cout << "Opção: ";
@@ -34,20 +37,30 @@ int mainMenu()
 
         switch (option)
         {
+        case 0:
+            std::cout << "\nA sair do programa...\n\n";
+            break;
         case 1:
-            dataAreaMenu();
+            listAvailableMaps();
+            map->loadMap(mapOption);
             break;
         case 2:
-            showPathsMenu();
+            if (validateMapChoice())
+            {
+                dataAreaMenu();
+            }
             break;
         case 3:
-            std::cout << "\nA sair do programa...\n\n";
+            if (validateMapChoice())
+            {
+                showPathsMenu();
+            }
             break;
         default:
             break;
         }
 
-    } while (option != 3);
+    } while (option != 0);
 
     return 0;
 }
@@ -60,11 +73,11 @@ int dataAreaMenu()
     {
         std::cout << "\n------- Dados da Área de Influência -------\n";
         std::cout << "-------------------------------------------\n\n";
-        std::cout << "1 - Escolher mapa da área de influência\n";
-        std::cout << "2 - Definir local inicial (depósito)\n";
-        std::cout << "3 - Definir local final (garagem)\n";
-        std::cout << "4 - Definir o ponto de entrega\n";
-        std::cout << "5 - Voltar atrás\n\n";
+        std::cout << "0 - Voltar Atrás\n";
+        std::cout << "----------------\n";
+        std::cout << "1 - Definir Local Inicial (depósito)\n";
+        std::cout << "2 - Definir Local Final (garagem)\n";
+        std::cout << "3 - Definir Pontos de Entrega\n\n";
         std::cout << "-------------------------------------------\n\n";
 
         std::cout << "Opção: ";
@@ -72,20 +85,19 @@ int dataAreaMenu()
 
         switch (option)
         {
+        case 0:
+            break;
         case 1:
-            listAvailableMaps();
             break;
         case 2:
             break;
         case 3:
             break;
-        case 4:
-            break;
         default:
             break;
         }
 
-    } while (option != 5);
+    } while (option != 0);
 
     return 0;
 }
@@ -98,9 +110,10 @@ int showPathsMenu()
     {
         std::cout << "\n-------- Visualização dos Percursos --------\n";
         std::cout << "--------------------------------------------\n\n";
-        std::cout << "1 - Percursos de todas as carrinhas\n";
-        std::cout << "2 - Percurso de uma determinada carrinha\n";
-        std::cout << "3 - Voltar atrás\n\n";
+        std::cout << "0 - Voltar Atrás\n";
+        std::cout << "----------------\n";
+        std::cout << "1 - Percursos de Todas as Carrinhas\n";
+        std::cout << "2 - Percurso de uma Determinada Carrinha\n\n";
         std::cout << "--------------------------------------------\n\n";
 
         std::cout << "Opção: ";
@@ -108,6 +121,8 @@ int showPathsMenu()
 
         switch (option)
         {
+        case 0:
+            break;
         case 1:
             break;
         case 2:
@@ -116,7 +131,7 @@ int showPathsMenu()
             break;
         }
 
-    } while (option != 3);
+    } while (option != 0);
 
     return 0;
 }
@@ -124,6 +139,7 @@ int showPathsMenu()
 void listAvailableMaps()
 {
     int option;
+    std::vector<std::string> maps;
 
     DIR *dirp = opendir("../Maps");
     struct dirent *dp;
@@ -135,22 +151,39 @@ void listAvailableMaps()
             maps.push_back(dp->d_name);
         }
     }
+
     closedir(dirp);
 
-    do
+    std::cout << "\n------------- Mapas Disponíveis -------------\n";
+    std::cout << "---------------------------------------------\n\n";
+    std::cout << "0 - Voltar Atrás\n";
+    std::cout << "----------------\n";
+
+    for (unsigned int i = 0; i < maps.size(); i++)
     {
-        std::cout << "\n------------- Mapas Disponíveis -------------\n";
-        std::cout << "---------------------------------------------\n\n";
+        std::cout << i + 1 << " - " << maps.at(i) << std::endl;
+    }
 
-        for (unsigned int i = 0; i < maps.size(); i++)
-        {
-            std::cout << i + 1 << " - " << maps.at(i) << std::endl;
-        }
+    std::cout << "\n---------------------------------------------\n\n";
+    std::cout << "Opção: ";
+    std::cin >> option;
 
-        std::cout << (int)maps.size() + 1 << " - Voltar atrás\n\n";
-        std::cout << "---------------------------------------------\n\n";
-        std::cout << "Opção: ";
-        std::cin >> option;
+    mapOption = maps.at(option - 1);
 
-    } while (option != (int)maps.size() + 1);
+    std::cout << "\n -> Escolhido Mapa ' " << maps.at(option - 1) << " ' ...\n";
+}
+
+bool validateMapChoice()
+{
+    if (mapOption == "")
+    {
+        std::cout << "\n---------------------------------\n\n";
+        std::cout << "\nEscolha um Mapa antes de começar!\n\n";
+        std::cout << "\n---------------------------------\n\n";
+        return false;
+    }
+    else
+    {
+        return true;
+    }
 }

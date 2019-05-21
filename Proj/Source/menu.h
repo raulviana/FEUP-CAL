@@ -6,5 +6,6 @@ int mainMenu();
 int dataAreaMenu();
 int showPathsMenu();
 void listAvailableMaps();
+bool validateMapChoice();
 
 #endif //MENU_H

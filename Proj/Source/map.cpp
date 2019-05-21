@@ -1,11 +1,15 @@
-#include <fstream>
-#include <sstream>
 #include <algorithm>
+#include <fstream>
 #include <iomanip>
+#include <sstream>
 
 #include "map.h"
 
-Map::Map(std::string mapName)
+Map::Map()
+{
+}
+
+void Map::loadMap(std::string mapName)
 {
     std::string nodeFile = "../Maps/" + mapName + "/T04_nodes_X_Y_" + mapName + ".txt";
     loadNodes(nodeFile);
@@ -17,7 +21,6 @@ Map::Map(std::string mapName)
     //cout << "antes: " << map->getNumVertex() << endl;
     removeNotConnectedNodes();
     //cout << "depois: " << map->getNumVertex() << endl;
-    removeExtraEdges();
     initGraphViewer();
 }
 
@@ -27,7 +30,7 @@ void Map::initGraphViewer()
     double graphWidth = map->getLimitRight() - map->getLimitLeft();
 
     int windowHeight = 800;
-    int windowWidth = max((int)(windowHeight * graphWidth / graphHeight), 800);
+    int windowWidth = windowHeight * graphWidth / graphHeight;
     GraphViewer *gv = new GraphViewer(windowWidth, windowHeight, false);
 
     gv->createWindow(windowWidth, windowHeight);
@@ -45,7 +48,6 @@ void Map::initGraphViewer()
 
 void Map::loadNodesToGraphViewer(GraphViewer *gv, double graphHeight, double graphWidth, int windowHeight, int windowWidth)
 {
-
     int idNode = 0;
     double X = 0;
     double Y = 0;
@@ -56,7 +58,7 @@ void Map::loadNodesToGraphViewer(GraphViewer *gv, double graphHeight, double gra
         X = (map->getVertexSet().at(i)->getInfo()->getX() - map->getLimitLeft()) / graphWidth;
         Y = 1.0 - ((map->getVertexSet().at(i)->getInfo()->getY() - map->getLimitBot()) / graphHeight);
 
-        gv->addNode(idNode, X * windowWidth * 5, Y * windowHeight*5);
+        gv->addNode(idNode, X * windowWidth, Y * windowHeight);
     }
 }
 
@@ -66,32 +68,48 @@ void Map::loadEdgesToGraphViewer(GraphViewer *gv)
     int idNode1 = 0;
     int idNode2 = 0;
 
-    for (int i = 0; i < map->getNumVertex(); i++)
+    auto vec = map->getVertexSet(); //All vertices
+    auto first = vec.begin();
+
+    //when it's a bidirectional edge, removes one of the edges and the other one becomes undirected in map (graph)
+    while (first != vec.end())
     {
-        for (int j = 0; j < map->getVertexSet().at(i)->getAdjSet().size(); j++)
+        auto vec2 = (*first)->getAdjSet(); //Edges of source vertex
+        auto second = vec2.begin();
+
+        while (second != vec2.end())
         {
-            idNode1 = map->getVertexSet().at(i)->getInfo()->getIdNode();
-            idNode2 = map->getVertexSet().at(i)->getAdjSet().at(j).getDest()->getInfo()->getIdNode();
+            auto vec3 = (*second).getDest()->getAdjSet(); //Edges of destiny vertex
+            auto third = vec3.begin();
 
-            if (map->getVertexSet().at(i)->getAdjSet().at(j).isUndirected())
+            while (third != vec3.end())
             {
-                gv->addEdge(idEdge,
-                            idNode1,
-                            idNode2,
-                            EdgeType::UNDIRECTED);
-                cout << "meeeeeeeeeeeeeee";
-            }
-            else
-            {
-                gv->addEdge(idEdge,
-                            idNode1,
-                            idNode2,
-                            EdgeType::DIRECTED);
-            }
+                idNode1 = (*first)->getInfo()->getIdNode();
+                idNode2 = (*second).getDest()->getInfo()->getIdNode();
 
-            gv->setEdgeWeight(idEdge, map->getVertexSet().at(i)->getAdjSet().at(j).getWeight());
+                if ((*third).getDest()->getInfo()->getIdNode() == (*first)->getInfo()->getIdNode())
+                {
+                    //cout << "return remove = " << map->removeEdge((*second).getDest()->getInfo(), (*first)->getInfo()) << endl;
+                    gv->addEdge(idEdge,
+                                idNode1,
+                                idNode2,
+                                EdgeType::UNDIRECTED);
+                    break;
+                }
+                else
+                {
+                    gv->addEdge(idEdge,
+                                idNode1,
+                                idNode2,
+                                EdgeType::DIRECTED);
+                }
+                ++third;
+            }
+            gv->setEdgeWeight(idEdge, (*second).getWeight());
             idEdge++;
+            ++second;
         }
+        ++first;
     }
 }
 
@@ -221,7 +239,7 @@ void Map::loadTags(std::string filename)
     int nNodes;
     int idNode = 0;
     int counter = 1;
-    string tag;
+    std::string tag;
 
     getline(fin, line); // number of tags
     numberOfTags = stoi(line);
@@ -262,6 +280,70 @@ void Map::loadTags(std::string filename)
     fin.close();
 }
 
+void Map::loadDeliveries(std::string filename)
+{
+    std::ifstream fin;
+    fin.open(filename);
+
+    if (!fin)
+    {
+        cerr << "Unable to open file! " << filename << endl;
+        exit(1); // call system to stop
+    }
+
+    std::string line;
+    int numberOfDeliveries;
+    std::string recipientName;
+    double contentValue;
+    double volume;
+    int idNode = 0;
+    int invoiceNumber = 1;
+    int it = 0;
+    int counter = 1;
+
+    getline(fin, line); // number of deliveries
+    numberOfDeliveries = stoi(line);
+
+    std::cout << "\n-------------------------------------------\n\n";
+    std::cout << " Processing " << numberOfDeliveries << " Deliveries ..." << endl
+              << endl;
+
+    while (!fin.eof())
+    {
+        getline(fin, line); // (recipientName, contentValue, volume, idNode, invoiceNumber)
+
+        // line = line.substr(1, string::npos);
+
+        it = line.find(",");
+        recipientName = line.substr(0, it);
+        line.erase(0, it + 2);
+
+        it = line.find(",");
+        contentValue = stod(line.substr(0, it));
+        line.erase(0, it + 2);
+
+        it = line.find(",");
+        volume = stod(line.substr(0, it));
+        line.erase(0, it + 2);
+
+        it = line.find(",");
+        idNode = stoi(line.substr(0, it));
+        line.erase(0, it + 2);
+
+        it = line.find(",");
+        invoiceNumber = stoi(line.substr(0, it));
+
+        deliveries.push_back(new Delivery(recipientName, contentValue, volume, idNode, invoiceNumber));
+
+        showLoadProgress(counter, numberOfDeliveries, "Delivery");
+        counter++;
+    }
+
+    std::cout << endl;
+
+    fin.close();
+}
+
 Node *Map::findNode(int idNode)
 {
     Node *node = NULL;
@@ -281,39 +363,7 @@ Node *Map::findNode(int idNode)
     return node;
 }
 
-void Map::removeExtraEdges()
-{
-    auto vec = map->getVertexSet();
-    auto first = vec.begin();
-
-    while (first != vec.end())
-    {
-        auto vec2 = (*first)->getAdjSet();
-        auto second = vec2.begin();
-
-        while (second != vec2.end())
-        {
-            auto vec3 = (*second).getDest()->getAdjSet();
-            auto third = vec3.begin();
-
-            while (third != vec3.end())
-            {
-                if ((*third).getDest()->getInfo()->getIdNode() == (*first)->getInfo()->getIdNode())
-                {
-                    //cout << "here\n";
-                    map->removeEdge((*first)->getInfo(), (*third).getDest()->getInfo());
-                    (*second).setUndirected(true);
-                    break;
-                }
-                ++third;
-            }
-
-            ++second;
-        }
-        ++first;
-    }
-}
-
+//removes nodes that don't have edges leaving them and edges that leave and get in the same node
 void Map::removeNotConnectedNodes()
 {
     auto vec = map->getVertexSet();
@@ -321,19 +371,7 @@ void Map::removeNotConnectedNodes()
 
     while (first != vec.end())
     {
-        if ((*first)->getAdjSet().size() == 0)
-        {
-            map->removeVertex((*first)->getInfo());
-        }
-        ++first;
-    }
-
-    vec = map->getVertexSet();
-    first = vec.begin();
-
-    while (first != vec.end())
-    {
-        auto vec2 = (*first)->getAdjSet();
+        auto vec2 = (*first)->getAdjSet(); //Edges of source vertex
         auto second = vec2.begin();
 
         while (second != vec2.end())
@@ -343,9 +381,22 @@ void Map::removeNotConnectedNodes()
                 //cout << "here2" << endl;
                 map->removeEdge((*first)->getInfo(), (*first)->getInfo());
             }
-            second++;
+            ++second;
         }
-        first++;
+        ++first;
+    }
+
+    vec = map->getVertexSet();
+    first = vec.begin();
+
+    while (first != vec.end())
+    {
+        if ((*first)->getAdjSet().size() == 0)
+        {
+            //cout << "here3" << endl;
+            map->removeVertex((*first)->getInfo());
+        }
+        ++first;
     }
 }
 

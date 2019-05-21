@@ -4,30 +4,25 @@
 #ifndef DELIVERY_H_
 #define DELIVERY_H_
 
-#include <string> 
-#include "graph.h"
-#include "map.h"
+#include <string>
 
-class Delivery{
-    private:
-        std::string recipientName;
-        float contentValue;
-        int volume;
-        int Node;  //Nao tenho a certeza se será asim, poseria ser Vertex? 
-        int invoiceNumber;
+class Delivery
+{
+private:
+    std::string recipientName;
+    double contentValue;
+    double volume;
+    int node; //Nao tenho a certeza se será asim, poseria ser Vertex?
+    int invoiceNumber;
 
-    public:
-        Delivery(string recipientName, float contentValue, int volume, int Node, int invoiceNumber);
-        ~Delivery();
-        std::string getrecipientName();
-        float getcontentValue();
-        float getvolume();
-        int getNode();  //Nao tenho a certeza se será asim, poseria ser Vertex? 
-        int getinvoiceNumber();
+public:
+    Delivery(std::string recipientName, double contentValue, double volume, int node, int invoiceNumber);
+    ~Delivery();
+    std::string getrecipientName();
+    double getcontentValue();
+    double getvolume();
+    int getNode(); //Nao tenho a certeza se será asim, poseria ser Vertex?
+    int getinvoiceNumber();
 };
 
-
-
 #endif /* DELIVERY_H_ */
-
-
