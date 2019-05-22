@@ -30,21 +30,16 @@ void Map::loadMap(std::string mapName)
 
 void Map::initGraphViewer()
 {
-    double graphHeight = map->getLimitTop() - map->getLimitBot();
-    double graphWidth = map->getLimitRight() - map->getLimitLeft();
+    int height = 600;
+    int width = 800;
 
-    int windowHeight = 800;
-    int windowWidth = windowHeight * graphWidth / graphHeight;
-    gv = new GraphViewer(windowWidth, windowHeight, false);
+    gv = new GraphViewer(width, height, false);
 
-    gv->createWindow(windowWidth, windowHeight);
-
-    gv->defineEdgeColor("blue");
+    gv->createWindow(width, height);
+    gv->defineEdgeColor("red");
     gv->defineVertexColor("yellow");
 
-    gv->defineVertexSize(5);
-
-    loadNodesToGraphViewer(gv, graphHeight, graphWidth, windowHeight, windowWidth);
+    loadNodesToGraphViewer(gv);
     loadEdgesToGraphViewer(gv);
 
     gv->rearrange();
@@ -55,19 +50,19 @@ void Map::closeGraphViewer()
     gv->closeWindow();
 }
 
-void Map::loadNodesToGraphViewer(GraphViewer *gv, double graphHeight, double graphWidth, int windowHeight, int windowWidth)
+void Map::loadNodesToGraphViewer(GraphViewer *gv)
 {
     int idNode = 0;
-    double X = 0;
-    double Y = 0;
+    double X = map->getVertexSet().at(0)->getInfo()->getX();
+    double Y = map->getVertexSet().at(0)->getInfo()->getY();
 
     for (int i = 0; i < map->getNumVertex(); i++)
     {
         idNode = map->getVertexSet().at(i)->getInfo()->getIdNode();
-        X = (map->getVertexSet().at(i)->getInfo()->getX() - map->getLimitLeft()) / graphWidth;
-        Y = 1.0 - ((map->getVertexSet().at(i)->getInfo()->getY() - map->getLimitBot()) / graphHeight);
+        int currentX = map->getVertexSet().at(i)->getInfo()->getX() - X;
+        int currentY = Y - map->getVertexSet().at(i)->getInfo()->getY();
 
-        gv->addNode(idNode, X * windowWidth, Y * windowHeight);
+        gv->addNode(idNode, currentX, currentY);
     }
 }
 
@@ -77,18 +72,18 @@ void Map::loadEdgesToGraphViewer(GraphViewer *gv)
     int idNode1 = 0;
     int idNode2 = 0;
 
-    auto vec = map->getVertexSet(); //All vertices
+    auto vec = map->getVertexSet(); // all vertices
     auto first = vec.begin();
 
     // when it's a bidirectional edge, removes one of the edges from the graph and the other one is added to the viewer as bidirectional
     while (first != vec.end())
     {
-        auto vec2 = (*first)->getAdjSet(); //Edges of source vertex
+        auto vec2 = (*first)->getAdjSet(); // edges of source vertex
         auto second = vec2.begin();
 
         while (second != vec2.end())
         {
-            auto vec3 = (*second).getDest()->getAdjSet(); //Edges of destiny vertex
+            auto vec3 = (*second).getDest()->getAdjSet(); // edges of destiny vertex
             auto third = vec3.begin();
 
             while (third != vec3.end())
@@ -98,7 +93,7 @@ void Map::loadEdgesToGraphViewer(GraphViewer *gv)
 
                 if ((*third).getDest()->getInfo()->getIdNode() == (*first)->getInfo()->getIdNode())
                 {
-                    //cout << "return remove = " << map->removeEdge((*second).getDest()->getInfo(), (*first)->getInfo()) << endl;
+                    map->removeEdge((*second).getDest()->getInfo(), (*first)->getInfo());
                     gv->addEdge(idEdge,
                                 idNode1,
                                 idNode2,

@@ -25,7 +25,7 @@ public:
     void loadMap(std::string mapName);
     void initGraphViewer();
     void closeGraphViewer();
-    void loadNodesToGraphViewer(GraphViewer *gv, double graphHeight, double graphWidth, int windowHeight, int windowWidth);
+    void loadNodesToGraphViewer(GraphViewer *gv);
     void loadEdgesToGraphViewer(GraphViewer *gv);
     void loadNodes(std::string filename);
     void loadEdges(std::string filename);

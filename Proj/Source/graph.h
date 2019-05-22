@@ -78,11 +78,6 @@ class Graph
     int **P = nullptr;             // path
     int findVertexIdx(const T &in) const;
 
-    double limitTop;
-    double limitLeft;
-    double limitBot;
-    double limitRight;
-
     void dfsVisit(Vertex<T> *v, vector<T> &res) const;
     bool dfsIsDAG(Vertex<T> *v) const;
 
@@ -100,11 +95,6 @@ public:
     bool isDAG() const;
     Vertex<T> *findVertex(const T &in) const;
     vector<Vertex<T> *> getVertexSet() const;
-
-    double getLimitTop();
-    double getLimitLeft();
-    double getLimitBot();
-    double getLimitRight();
 
     // Single source
     void dijkstraShortestPath(const T &s);
@@ -186,18 +176,6 @@ vector<Vertex<T> *> Graph<T>::getVertexSet() const
     return vertexSet;
 }
 
-template <class T>
-double Graph<T>::getLimitTop() { return this->limitTop; }
-
-template <class T>
-double Graph<T>::getLimitLeft() { return this->limitLeft; }
-
-template <class T>
-double Graph<T>::getLimitBot() { return this->limitBot; }
-
-template <class T>
-double Graph<T>::getLimitRight() { return this->limitRight; }
-
 /*
  * Auxiliary function to find a vertex with a given content.
  */
@@ -219,29 +197,6 @@ bool Graph<T>::addVertex(const T &in)
 {
     if (findVertex(in) != NULL)
         return false;
-
-    if (getNumVertex() == 0)
-    {
-        this->limitTop = in->getY();
-        ;
-        this->limitLeft = in->getX();
-        ;
-        this->limitBot = in->getY();
-        ;
-        this->limitRight = in->getX();
-        ;
-    }
-    else
-    {
-        if (in->getX() > limitRight)
-            limitRight = in->getX();
-        else if (in->getX() < limitLeft)
-            limitLeft = in->getX();
-        if (in->getY() > limitTop)
-            limitTop = in->getY();
-        else if (in->getY() < limitBot)
-            limitBot = in->getY();
-    }
 
     vertexSet.push_back(new Vertex<T>(in));
     return true;
