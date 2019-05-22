@@ -15,6 +15,8 @@ void pathOfVan(Map *map)
 
     Graph<Node *> *graph = map->getGraph();
     std::vector<Node *> res = graph->bfs(warehouse);
+    //constroi vetor com as encomendas
+    std::vector<Delivery *> deliveries = map->getDeliveries();
 
     if (warehouse->getIdNode() != garage->getIdNode())
     {
@@ -22,9 +24,18 @@ void pathOfVan(Map *map)
         {
             cout << "Garage can not be reached from the warehouse!\n";
         }
+        for (auto i = 0; i < deliveries.size(); i++){
+            
+            if(find(res.begin(), res.end(), deliveries.at(i)->getNode()) == res.end()){
+                cout << "Delivery Node can not be reached from warehouse";
+            }
+        }
     }
 
     isReachable(res, map->getDeliveries());
+
+
+
      //single source diijktra
     //shortest path
     //opt
