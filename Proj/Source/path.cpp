@@ -25,8 +25,9 @@ void pathOfVan(Map *map)
     }
 
     isReachable(res, map->getDeliveries());
-
-    //caixeiro viajante
+     //single source diijktra
+    //shortest path
+    //opt
     //...
 }
 

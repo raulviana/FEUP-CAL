@@ -104,6 +104,9 @@ public:
     void bellmanFordShortestPath(const T &s);
     vector<T> getPath(const T &origin, const T &dest) const;
 
+    //Duoble Source
+
+
     // All pairs
     void floydWarshallShortestPath();
     vector<T> getfloydWarshallPath(const T &origin, const T &dest) const;
@@ -733,5 +736,6 @@ vector<T> Graph<T>::getfloydWarshallPath(const T &orig, const T &dest) const
     reverse(res.begin(), res.end());
     return res;
 }
+
 
 #endif /* GRAPH_H_ */
