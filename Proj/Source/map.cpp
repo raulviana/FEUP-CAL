@@ -17,6 +17,8 @@ void Map::loadMap(std::string mapName)
     loadEdges(edgeFile);
     std::string tagFile = "../Maps/" + mapName + "/T04_tags_" + mapName + ".txt";
     loadTags(tagFile);
+    std::string deliveriesFile = "../Maps/" + mapName + "/deliveries" + mapName + ".txt";
+    loadDeliveries(deliveriesFile);
 
     //cout << "antes: " << map->getNumVertex() << endl;
     removeNotConnectedNodes();
