@@ -7,6 +7,7 @@
 
 #include "menu.h"
 #include "map.h"
+#include "path.h"
 
 std::string mapOption = "";
 Map *map = new Map();
@@ -38,11 +39,17 @@ int mainMenu()
         switch (option)
         {
         case 0:
+            if (map->getGraphViewer() != NULL)
+                map->closeGraphViewer();
             std::cout << "\nA sair do programa...\n\n";
             break;
         case 1:
-            listAvailableMaps();
-            map->loadMap(mapOption);
+            if (!validateMapChoice())
+            {
+                listAvailableMaps();
+                if (mapOption != "")
+                    map->loadMap(mapOption);
+            }
             break;
         case 2:
             if (validateMapChoice())
@@ -88,8 +95,10 @@ int dataAreaMenu()
         case 0:
             break;
         case 1:
+            listAvailableLogisticPoints("warehouse");
             break;
         case 2:
+            listAvailableLogisticPoints("garage");
             break;
         case 3:
             break;
@@ -124,6 +133,7 @@ int showPathsMenu()
         case 0:
             break;
         case 1:
+            pathOfVan(map);
             break;
         case 2:
             break;
@@ -168,9 +178,11 @@ void listAvailableMaps()
     std::cout << "Opção: ";
     std::cin >> option;
 
-    mapOption = maps.at(option - 1);
-
-    std::cout << "\n -> Escolhido Mapa ' " << maps.at(option - 1) << " ' ...\n";
+    if (option != 0)
+    {
+        mapOption = maps.at(option - 1);
+        std::cout << "\n -> Escolhido Mapa ' " << maps.at(option - 1) << " ' ...\n";
+    }
 }
 
 bool validateMapChoice()
@@ -186,4 +198,69 @@ bool validateMapChoice()
     {
         return true;
     }
+}
+
+void listAvailableLogisticPoints(std::string pointType)
+{
+    int option;
+    std::vector<int> showedNodes;
+    Node *node;
+
+    std::cout << "\n------------- Pontos Disponíveis ------------\n";
+    std::cout << "---------------------------------------------\n\n";
+    std::cout << "0 - Voltar Atrás\n";
+    std::cout << "----------------\n";
+
+    int counter = 0; // to choose 5 tags
+
+    for (unsigned int i = 0; i < map->getGraph()->getNumVertex(); i++) /* it only shows the first 5 for now ... */
+    {
+        std::string tag = map->getGraph()->getVertexSet().at(i)->getInfo()->getTag();
+        node = map->getGraph()->getVertexSet().at(i)->getInfo();
+
+        if (isTagLogisticPoint(tag))
+        {
+            std::cout << counter + 1 << " - " << node->getIdNode() << std::endl;
+            showedNodes.push_back(i);
+            counter++;
+        }
+
+        if (counter == 5)
+            break;
+    }
+
+    std::cout << "\n---------------------------------------------\n\n";
+    std::cout << "Opção: ";
+    std::cin >> option;
+
+    if (option != 0)
+    {
+        node = map->getGraph()->getVertexSet().at(showedNodes.at(option - 1))->getInfo();
+
+        if (pointType == "garage")
+            map->setGarage(node);
+        else if (pointType == "warehouse")
+            map->setWarehouse(node);
+
+        std::cout << "\n -> Escolhido Ponto ' " << node->getIdNode() << " ' -> " << pointType << " ...\n";
+    }
+}
+
+bool isTagLogisticPoint(std::string tag)
+{
+    if (tag == "building=warehouse" ||
+        tag == "industrial=warehouse" ||
+        tag == "landuse=industrial" ||
+        tag == "amenity=loading_dock")
+        return true;
+
+    return false;
+}
+
+bool isTagDeliveryPoint(std::string tag)
+{
+    if (!isTagLogisticPoint(tag) && tag != "")
+        return true;
+
+    return false;
 }

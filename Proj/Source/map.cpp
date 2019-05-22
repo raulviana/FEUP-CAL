@@ -22,6 +22,8 @@ void Map::loadMap(std::string mapName)
     removeNotConnectedNodes();
     //cout << "depois: " << map->getNumVertex() << endl;
     initGraphViewer();
+    std::string deliveryFile = "../Maps/" + mapName + "/deliveries" + mapName + ".txt";
+    loadDeliveries(deliveryFile);
 }
 
 void Map::initGraphViewer()
@@ -31,7 +33,7 @@ void Map::initGraphViewer()
 
     int windowHeight = 800;
     int windowWidth = windowHeight * graphWidth / graphHeight;
-    GraphViewer *gv = new GraphViewer(windowWidth, windowHeight, false);
+    gv = new GraphViewer(windowWidth, windowHeight, false);
 
     gv->createWindow(windowWidth, windowHeight);
 
@@ -44,6 +46,11 @@ void Map::initGraphViewer()
     loadEdgesToGraphViewer(gv);
 
     gv->rearrange();
+}
+
+void Map::closeGraphViewer()
+{
+    gv->closeWindow();
 }
 
 void Map::loadNodesToGraphViewer(GraphViewer *gv, double graphHeight, double graphWidth, int windowHeight, int windowWidth)
@@ -71,7 +78,7 @@ void Map::loadEdgesToGraphViewer(GraphViewer *gv)
     auto vec = map->getVertexSet(); //All vertices
     auto first = vec.begin();
 
-    //when it's a bidirectional edge, removes one of the edges and the other one becomes undirected in map (graph)
+    // when it's a bidirectional edge, removes one of the edges from the graph and the other one is added to the viewer as bidirectional
     while (first != vec.end())
     {
         auto vec2 = (*first)->getAdjSet(); //Edges of source vertex
@@ -167,7 +174,6 @@ void Map::loadNodes(std::string filename)
     }
 
     std::cout << endl;
-
     fin.close();
 }
 
@@ -219,7 +225,6 @@ void Map::loadEdges(std::string filename)
     }
 
     std::cout << endl;
-
     fin.close();
 }
 
@@ -251,6 +256,7 @@ void Map::loadTags(std::string filename)
     while (!fin.eof())
     {
         getline(fin, tag); // tagname
+        tag = tag.substr(0, tag.length() - 1);
 
         getline(fin, line); // number of nodes with this tag
         nNodes = stoi(line);
@@ -276,7 +282,6 @@ void Map::loadTags(std::string filename)
     }
 
     std::cout << endl;
-
     fin.close();
 }
 
@@ -312,8 +317,6 @@ void Map::loadDeliveries(std::string filename)
     {
         getline(fin, line); // (recipientName, contentValue, volume, idNode, invoiceNumber)
 
-        // line = line.substr(1, string::npos);
-
         it = line.find(",");
         recipientName = line.substr(0, it);
         line.erase(0, it + 2);
@@ -333,14 +336,13 @@ void Map::loadDeliveries(std::string filename)
         it = line.find(",");
         invoiceNumber = stoi(line.substr(0, it));
 
-        deliveries.push_back(new Delivery(recipientName, contentValue, volume, idNode, invoiceNumber));
+        deliveries.push_back(new Delivery(recipientName, contentValue, volume, findNode(idNode), invoiceNumber));
 
         showLoadProgress(counter, numberOfDeliveries, "Delivery");
         counter++;
     }
 
     std::cout << endl;
-
     fin.close();
 }
 
@@ -371,7 +373,7 @@ void Map::removeNotConnectedNodes()
 
     while (first != vec.end())
     {
-        auto vec2 = (*first)->getAdjSet(); //Edges of source vertex
+        auto vec2 = (*first)->getAdjSet(); // edges of source vertex
         auto second = vec2.begin();
 
         while (second != vec2.end())
@@ -409,4 +411,39 @@ void showLoadProgress(int counter, int number, std::string type)
     std::cout << " [" << type << " " << counter << " of " << number << " ] ";
     std::cout << fixed << setprecision(2) << percentage << '%' << "\r";
     std::cout.flush();
+}
+
+Graph<Node *> *Map::getGraph() const
+{
+    return map;
+}
+
+GraphViewer *Map::getGraphViewer()
+{
+    return gv;
+}
+
+std::vector<Delivery *> Map::getDeliveries() const
+{
+    return deliveries;
+}
+
+Node *Map::getWarehouse()
+{
+    return warehouse;
+}
+
+void Map::setWarehouse(Node *warehouse)
+{
+    this->warehouse = warehouse;
+}
+
+Node *Map::getGarage()
+{
+    return garage;
+}
+
+void Map::setGarage(Node *garage)
+{
+    this->garage = garage;
 }

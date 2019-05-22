@@ -6,23 +6,25 @@
 
 #include <string>
 
+#include "node.h"
+
 class Delivery
 {
 private:
     std::string recipientName;
     double contentValue;
     double volume;
-    int node; //Nao tenho a certeza se será asim, poseria ser Vertex?
+    Node *node;
     int invoiceNumber;
 
 public:
-    Delivery(std::string recipientName, double contentValue, double volume, int node, int invoiceNumber);
+    Delivery(std::string recipientName, double contentValue, double volume, Node *node, int invoiceNumber);
     ~Delivery();
-    std::string getrecipientName();
-    double getcontentValue();
-    double getvolume();
-    int getNode(); //Nao tenho a certeza se será asim, poseria ser Vertex?
-    int getinvoiceNumber();
+    std::string getRecipientName();
+    double getContentValue();
+    double getVolume();
+    Node *getNode();
+    int getInvoiceNumber();
 };
 
 #endif /* DELIVERY_H_ */

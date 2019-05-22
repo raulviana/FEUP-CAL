@@ -15,12 +15,16 @@ class Map
 {
 private:
     Graph<Node *> *map = (Graph<Node *> *)malloc(4096);
-    vector<Delivery *> deliveries;
+    GraphViewer *gv;
+    std::vector<Delivery *> deliveries;
+    Node *warehouse;
+    Node *garage;
 
 public:
     Map();
     void loadMap(std::string mapName);
     void initGraphViewer();
+    void closeGraphViewer();
     void loadNodesToGraphViewer(GraphViewer *gv, double graphHeight, double graphWidth, int windowHeight, int windowWidth);
     void loadEdgesToGraphViewer(GraphViewer *gv);
     void loadNodes(std::string filename);
@@ -29,6 +33,14 @@ public:
     void loadDeliveries(std::string filename);
     Node *findNode(int idNode);
     void removeNotConnectedNodes();
+
+    Graph<Node *> *getGraph() const;
+    GraphViewer *getGraphViewer();
+    std::vector<Delivery *> getDeliveries() const;
+    Node *getWarehouse();
+    void setWarehouse(Node *warehouse);
+    Node *getGarage();
+    void setGarage(Node *garage);
 };
 
 void showLoadProgress(int counter, int number, std::string type);

@@ -14,7 +14,7 @@ graphviewer.o: graphviewer.h connection.h  edgetype.h
 map.o: map.h  graphviewer.h graph.h node.h delivery.h
 node.o: node.h
 delivery.o: delivery.h
-path.o: path.h
+path.o: path.h map.h
 
 clean:
 	@rm -f smartDelivery $(OBJECTS)
