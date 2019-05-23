@@ -97,3 +97,10 @@ void isReachable(std::vector<Node *> res, std::vector<Delivery *> deliveries)
         }
     }
 }
+
+/*
+ * ================================================================================================
+ * 2nd Iteration - 1 van with unlimited storage | starting point not the same as the ending point
+ * ================================================================================================
+ */
+
