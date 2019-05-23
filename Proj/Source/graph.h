@@ -39,7 +39,7 @@ class Vertex
     int queueIndex = 0; // required by MutablePriorityQueue
     bool processing;    // auxiliary field used by isDAG
 
-    void addEdge(Vertex<T> *dest, double w);
+    void addEdge(Vertex<T> *dest, double w, int id);
     bool removeEdgeTo(Vertex<T> *d);
 
 public:
@@ -61,11 +61,13 @@ class Edge
 {
     Vertex<T> *dest; // destination vertex
     double weight;   // edge weight
+    int ID;
 
 public:
-    Edge(Vertex<T> *d, double w);
+    Edge(Vertex<T> *d, double w, int id);
     Vertex<T> *getDest();
     double getWeight();
+    int getID();
     friend class Graph<T>;
     friend class Vertex<T>;
 };
@@ -86,7 +88,7 @@ public:
     int getNumVertex() const;
     bool addVertex(const T &in);
     bool removeVertex(const T &in);
-    bool addEdge(const T &sourc, const T &dest, double w);
+    bool addEdge(const T &sourc, const T &dest, double w, int id);
     bool removeEdge(const T &sourc, const T &dest);
     vector<T> dfs() const;
     vector<T> bfs(const T &source) const;
@@ -150,8 +152,9 @@ vector<Edge<T>> Vertex<T>::getAdjSet() const
 
 /************************* Edge  **************************/
 template <class T>
-Edge<T>::Edge(Vertex<T> *d, double w) : dest(d), weight(w)
+Edge<T>::Edge(Vertex<T> *d, double w, int id) : dest(d), weight(w)
 {
+    this->ID = id;
 }
 
 template <class T>
@@ -164,6 +167,12 @@ template <class T>
 double Edge<T>::getWeight()
 {
     return this->weight;
+}
+
+template <class T>
+int Edge<T>::getID()
+{
+    return this->ID;
 }
 
 /*************************** Graph  **************************/
@@ -211,7 +220,7 @@ bool Graph<T>::addVertex(const T &in)
  * Returns true if successful, and false if the source or destination vertex does not exist.
  */
 template <class T>
-bool Graph<T>::addEdge(const T &sourc, const T &dest, double w)
+bool Graph<T>::addEdge(const T &sourc, const T &dest, double w, int id)
 {
     Vertex<T> *vs = findVertex(sourc);
     Vertex<T> *vd = findVertex(dest);
@@ -219,7 +228,7 @@ bool Graph<T>::addEdge(const T &sourc, const T &dest, double w)
     if (vs == NULL || vd == NULL)
         return false;
 
-    vs->addEdge(vd, w);
+    vs->addEdge(vd, w, id);
     return true;
 }
 
@@ -228,9 +237,9 @@ bool Graph<T>::addEdge(const T &sourc, const T &dest, double w)
  * with a given destination vertex (d) and edge weight (w).
  */
 template <class T>
-void Vertex<T>::addEdge(Vertex<T> *d, double w)
+void Vertex<T>::addEdge(Vertex<T> *d, double w, int id)
 {
-    adj.push_back(Edge<T>(d, w));
+    adj.push_back(Edge<T>(d, w, id));
 }
 
 /*

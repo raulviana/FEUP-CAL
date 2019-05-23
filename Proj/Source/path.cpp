@@ -29,14 +29,20 @@ void pathOfVan(Map *map)
 
     cout << "unordered size = " << nodesUnordered.size() << endl;
 
-    vector<Node *> nodesOrdered = two.performImprovement(nodesUnordered);
-    vector<Node *> allNodes;
+    std::vector<Node *> nodesOrdered = two.performImprovement(nodesUnordered);
+    if (nodesOrdered.empty())
+    {
+        std::cout << "A single path can not be made starting in th warehouse and ending in the garagee stoping in all delivery points given..\n";
+        return;
+    }
+
+    std::vector<Node *> allNodes;
 
     for (unsigned int i = 0; i < nodesOrdered.size() - 1; i++)
     {
         graph->dijkstraShortestPath(nodesOrdered.at(i));
         cout << "ordered " << i << " = " << nodesOrdered.at(i)->getIdNode() << endl;
-        vector<Node *> pathNodes = graph->getPath(nodesOrdered.at(i), nodesOrdered.at(i + 1));
+        std::vector<Node *> pathNodes = graph->getPath(nodesOrdered.at(i), nodesOrdered.at(i + 1));
 
         for (unsigned int i = 0; i < pathNodes.size(); i++)
         {
@@ -63,6 +69,10 @@ void pathOfVan(Map *map)
     }
 
     std::cout << endl;
+
+    map->viewPath(&allNodes);
+
+    // map
 
     // std::vector<Node *> res = graph->bfs(warehouse);
 
@@ -100,7 +110,6 @@ void isReachable(std::vector<Node *> res, std::vector<Delivery *> deliveries)
 
 /*
  * ================================================================================================
- * 2nd Iteration - 1 van with unlimited storage | starting point not the same as the ending point
+ * 2nd Iteration - 
  * ================================================================================================
  */
-

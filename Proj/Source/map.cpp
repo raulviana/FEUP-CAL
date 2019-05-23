@@ -16,6 +16,7 @@ void Map::loadMap(std::string mapName)
     loadNodes(nodeFile);
     std::string edgeFile = "../Maps/" + mapName + "/T04_edges_" + mapName + ".txt";
     loadEdges(edgeFile);
+    removeExtraEdges();
     std::string tagFile = "../Maps/" + mapName + "/T04_tags_" + mapName + ".txt";
     loadTags(tagFile);
 
@@ -35,13 +36,85 @@ void Map::initGraphViewer()
     gv = new GraphViewer(width, height, false);
 
     gv->createWindow(width, height);
-    gv->defineEdgeColor("red");
-    gv->defineVertexColor("yellow");
+    setGraphViewerDefaultAppearance();
 
-    loadNodesToGraphViewer(gv);
-    loadEdgesToGraphViewer(gv);
+    loadNodesToGraphViewer();
+    loadEdgesToGraphViewer();
 
     gv->rearrange();
+}
+
+void Map::setGraphViewerDefaultAppearance()
+{
+    gv->defineEdgeColor(RED);
+    gv->defineVertexColor(YELLOW);
+
+    if (allNodes.size() != 0)
+    {
+        for (int i = 0; i < allNodes.size(); i++)
+        {
+            gv->setVertexColor(allNodes.at(i)->getIdNode(), YELLOW);
+
+            if (i != allNodes.size() - 1)
+            {
+                int idEdge = findEdge(allNodes.at(i), allNodes.at(i + 1));
+                gv->setEdgeColor(idEdge, RED);
+                gv->setEdgeThickness(idEdge, 1);
+            }
+        }
+
+        gv->setVertexLabel(allNodes.at(0)->getIdNode(), ".");
+        gv->setVertexLabel(allNodes.at(allNodes.size() - 1)->getIdNode(), ".");
+    }
+
+    gv->rearrange();
+}
+
+void Map::viewPath(std::vector<Node *> *allNodes)
+{
+    this->allNodes = *allNodes;
+
+    for (int i = 0; i < allNodes->size(); i++)
+    {
+        gv->setVertexColor(allNodes->at(i)->getIdNode(), RED);
+        if (i != allNodes->size() - 1)
+        {
+            int idEdge = findEdge(allNodes->at(i), allNodes->at(i + 1));
+
+            if (idEdge != 0)
+            {
+                gv->setEdgeColor(idEdge, BLACK);
+                gv->setEdgeThickness(idEdge, 3);
+            }
+            else
+            {
+                std::cout << "No edges found ...";
+            }
+        }
+    }
+
+    gv->setVertexLabel(allNodes->at(0)->getIdNode(), "Armazém");
+    gv->setVertexLabel(allNodes->at(allNodes->size() - 1)->getIdNode(), "Garagem");
+
+    gv->rearrange();
+}
+
+int Map::findEdge(Node *nodeB, Node *nodeE)
+{
+    auto adj = map->findVertex(nodeB)->getAdjSet(); // edges of source vertex
+    auto dest = adj.begin();
+
+    while (dest != adj.end())
+    {
+        if ((*dest).getDest()->getInfo()->getIdNode() == nodeE->getIdNode())
+        {
+            return (*dest).getID();
+        }
+
+        ++dest;
+    }
+
+    return 0;
 }
 
 void Map::closeGraphViewer()
@@ -49,7 +122,7 @@ void Map::closeGraphViewer()
     gv->closeWindow();
 }
 
-void Map::loadNodesToGraphViewer(GraphViewer *gv)
+void Map::loadNodesToGraphViewer()
 {
     int idNode = 0;
     double X = map->getVertexSet().at(0)->getInfo()->getX();
@@ -65,16 +138,15 @@ void Map::loadNodesToGraphViewer(GraphViewer *gv)
     }
 }
 
-void Map::loadEdgesToGraphViewer(GraphViewer *gv)
+void Map::loadEdgesToGraphViewer()
 {
-    int idEdge = 1;
     int idNode1 = 0;
     int idNode2 = 0;
 
     auto vec = map->getVertexSet(); // all vertices
     auto first = vec.begin();
 
-    // when it's a bidirectional edge, removes one of the edges from the graph and the other one is added to the viewer as bidirectional
+    // when it's a bidirectional edge
     while (first != vec.end())
     {
         auto vec2 = (*first)->getAdjSet(); // edges of source vertex
@@ -85,31 +157,15 @@ void Map::loadEdgesToGraphViewer(GraphViewer *gv)
             auto vec3 = (*second).getDest()->getAdjSet(); // edges of destiny vertex
             auto third = vec3.begin();
 
-            while (third != vec3.end())
-            {
-                idNode1 = (*first)->getInfo()->getIdNode();
-                idNode2 = (*second).getDest()->getInfo()->getIdNode();
+            idNode1 = (*first)->getInfo()->getIdNode();
+            idNode2 = (*second).getDest()->getInfo()->getIdNode();
 
-                if ((*third).getDest()->getInfo()->getIdNode() == (*first)->getInfo()->getIdNode())
-                {
-                    map->removeEdge((*second).getDest()->getInfo(), (*first)->getInfo());
-                    gv->addEdge(idEdge,
-                                idNode1,
-                                idNode2,
-                                EdgeType::UNDIRECTED);
-                    break;
-                }
-                else
-                {
-                    gv->addEdge(idEdge,
-                                idNode1,
-                                idNode2,
-                                EdgeType::DIRECTED);
-                }
-                ++third;
-            }
-            gv->setEdgeWeight(idEdge, (*second).getWeight());
-            idEdge++;
+            gv->addEdge((*second).getID(),
+                        idNode1,
+                        idNode2,
+                        EdgeType::DIRECTED);
+
+            gv->setEdgeWeight((*second).getID(), (*second).getWeight());
             ++second;
         }
         ++first;
@@ -185,11 +241,11 @@ void Map::loadEdges(std::string filename)
     }
 
     std::string line;
+    int idEdge = 1;
     int numberOfEdges;
     int it = 0;
     int idNodeOrigin = 0;
     int idNodeDestiny = 0;
-    int counter = 1;
 
     getline(fin, line); // number of edges
     numberOfEdges = stoi(line);
@@ -213,11 +269,16 @@ void Map::loadEdges(std::string filename)
         Node *nodeOrigin = findNode(idNodeDestiny);
         Node *nodeDestiny = findNode(idNodeOrigin);
 
-        /* add edge to the graph */
-        map->addEdge(nodeOrigin, nodeDestiny, nodeOrigin->getDistanceToAnotherNode(nodeDestiny));
+        double distance = nodeOrigin->getDistanceToAnotherNode(nodeDestiny);
 
-        showLoadProgress(counter, numberOfEdges, "Edge");
-        counter++;
+        /* add edge to the graph */
+        map->addEdge(nodeOrigin, nodeDestiny, distance, idEdge);
+        idEdge++;
+
+        map->addEdge(nodeDestiny, nodeOrigin, distance, idEdge);
+
+        showLoadProgress(idEdge, numberOfEdges * 2, "Edge");
+        idEdge++;
     }
 
     std::cout << endl;
@@ -399,15 +460,36 @@ void Map::removeDisconnectedNodes()
     }
 }
 
-void showLoadProgress(int counter, int number, std::string type)
+void Map::removeExtraEdges()
 {
-    double percentage;
+    auto vs = map->getVertexSet();
+    auto v = vs.begin();
+    int counter = 1;
 
-    percentage = (100 * counter) / (double)number;
+    // removes edges that go from a certain node to the same (self relation)
+    while (v != vs.end())
+    {
+        auto es = (*v)->getAdjSet(); // edges of source vertex
+        auto e = es.begin();
 
-    std::cout << " [" << type << " " << counter << " of " << number << " ] ";
-    std::cout << fixed << setprecision(2) << percentage << '%' << "\r";
-    std::cout.flush();
+        while (e != es.end())
+        {
+            auto e2 = next(e, 1);
+
+            while (e2 != es.end())
+            {
+                if ((*e).getDest()->getInfo()->getIdNode() == (*e2).getDest()->getInfo()->getIdNode())
+                {
+                    cout << counter << endl;
+                    counter++;
+                    map->removeEdge((*v)->getInfo(), (*e2).getDest()->getInfo());
+                }
+                ++e2;
+            }
+            e++;
+        }
+        ++v;
+    }
 }
 
 Graph<Node *> *Map::getGraph() const
@@ -443,4 +525,15 @@ Node *Map::getGarage()
 void Map::setGarage(Node *garage)
 {
     this->garage = garage;
+}
+
+void showLoadProgress(int counter, int number, std::string type)
+{
+    double percentage;
+
+    percentage = (100 * counter) / (double)number;
+
+    std::cout << " [" << type << " " << counter << " of " << number << " ] ";
+    std::cout << fixed << setprecision(2) << percentage << '%' << "\r";
+    std::cout.flush();
 }

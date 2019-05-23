@@ -147,6 +147,8 @@ int showPathsMenu()
 
     } while (option != 0);
 
+    map->setGraphViewerDefaultAppearance();
+
     return 0;
 }
 
@@ -263,7 +265,17 @@ void listAvailableLogisticPoints(std::string pointType)
         }
         else
         {
+            //if (isTagLogisticPoint(map->findNode(option)->getTag()))
+            //{
             node = map->getGraph()->getVertexSet().at(showedNodes.at(option - 1))->getInfo();
+            /*} 
+            else
+            {
+                std::cout << "\n---------------------------------\n";
+                std::cout << "O ponto indicado não é logístico!\n";
+                std::cout << "---------------------------------\n";
+                return;
+            }*/
         }
 
         if (pointType == "warehouse")

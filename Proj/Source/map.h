@@ -19,20 +19,25 @@ private:
     std::vector<Delivery *> deliveries;
     Node *warehouse;
     Node *garage;
+    std::vector<Node *> allNodes;
 
 public:
     Map();
     void loadMap(std::string mapName);
     void initGraphViewer();
+    void setGraphViewerDefaultAppearance();
+    void viewPath(std::vector<Node *> *allNodes);
+    int findEdge(Node *nodeB, Node *nodeE);
     void closeGraphViewer();
-    void loadNodesToGraphViewer(GraphViewer *gv);
-    void loadEdgesToGraphViewer(GraphViewer *gv);
+    void loadNodesToGraphViewer();
+    void loadEdgesToGraphViewer();
     void loadNodes(std::string filename);
     void loadEdges(std::string filename);
     void loadTags(std::string filename);
     void loadDeliveries(std::string filename);
     Node *findNode(int idNode);
     void removeDisconnectedNodes();
+    void removeExtraEdges();
 
     Graph<Node *> *getGraph() const;
     GraphViewer *getGraphViewer();

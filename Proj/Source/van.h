@@ -5,27 +5,26 @@
 #ifndef VAN_H_
 #define VAN_H_
 
-#include "delivery.h"
+#include <vector>
 
-class Van{
-    private:
-    vector<Deliveries*> deliveries;
+#include "delivery.h"
+#include "map.h"
+
+class Van
+{
+private:
+    std::vector<Delivery *> deliveries;
     int maxVol;
 
-    public:
+public:
     Van();
-    Van(vector<Deliveries*> deliveries);
-    vector<Deliveries*> getDeliveries();
-    void addDelivery(Delivery* delivery);
+    Van(std::vector<Delivery *> deliveries);
+    std::vector<Delivery *> getDeliveries();
     int getMaxVol();
-    void addDelivery();
     void setMaxVol();
+
+    void addDelivery(Delivery *delivery);
+    std::vector<Van *> calcVans();
 };
-
-
-
-
-
-
 
 #endif /* VAN_H_ */
