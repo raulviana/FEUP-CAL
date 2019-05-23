@@ -102,10 +102,10 @@ public:
     void dijkstraShortestPathOld(const T &s);
     void unweightedShortestPath(const T &s);
     void bellmanFordShortestPath(const T &s);
-    vector<T> getPath(const T &origin, const T &dest) const;
+    vector<T> getPath(const T &origin, const T &dest);
+    double getDistOfVertex(const T &content);
 
     //Duoble Source
-
 
     // All pairs
     void floydWarshallShortestPath();
@@ -580,21 +580,29 @@ bool Graph<T>::analize(Vertex<T> *v, Vertex<T> *w, double weight)
 }
 
 template <class T>
-vector<T> Graph<T>::getPath(const T &origin, const T &dest) const
+vector<T> Graph<T>::getPath(const T &origin, const T &dest)
 {
     vector<T> res;
+    Vertex<T> *v = findVertex(dest);
 
-    for (Vertex<T> *v = findVertex(dest); v != NULL; v = v->path)
+    if (v == nullptr || v->dist == INF) // missing or disconnected
+        return res;
+
+    for (; v != nullptr; v = v->path)
     {
+        std::cout << "here" << endl;
         res.push_back(v->info);
-
-        if (v->info == origin)
-            break;
     }
 
     reverse(res.begin(), res.end());
 
     return res;
+}
+
+template <class T>
+double Graph<T>::getDistOfVertex(const T &content)
+{
+    return findVertex(content)->getDist();
 }
 
 template <class T>
@@ -736,6 +744,5 @@ vector<T> Graph<T>::getfloydWarshallPath(const T &orig, const T &dest) const
     reverse(res.begin(), res.end());
     return res;
 }
-
 
 #endif /* GRAPH_H_ */

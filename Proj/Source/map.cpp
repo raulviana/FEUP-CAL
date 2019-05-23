@@ -7,6 +7,7 @@
 
 Map::Map()
 {
+    map = new Graph<Node *>();
 }
 
 void Map::loadMap(std::string mapName)
@@ -17,12 +18,9 @@ void Map::loadMap(std::string mapName)
     loadEdges(edgeFile);
     std::string tagFile = "../Maps/" + mapName + "/T04_tags_" + mapName + ".txt";
     loadTags(tagFile);
-    std::string deliveriesFile = "../Maps/" + mapName + "/deliveries" + mapName + ".txt";
-    loadDeliveries(deliveriesFile);
-   
 
     //cout << "antes: " << map->getNumVertex() << endl;
-    removeNotConnectedNodes();
+    removeDisconnectedNodes();
     //cout << "depois: " << map->getNumVertex() << endl;
     initGraphViewer();
     std::string deliveryFile = "../Maps/" + mapName + "/deliveries" + mapName + ".txt";
@@ -363,12 +361,12 @@ Node *Map::findNode(int idNode)
     return node;
 }
 
-//removes nodes that don't have edges leaving them and edges that leave and get in the same node
-void Map::removeNotConnectedNodes()
+void Map::removeDisconnectedNodes()
 {
     auto vec = map->getVertexSet();
     auto first = vec.begin();
 
+    // removes edges that go from a certain node to the same (self relation)
     while (first != vec.end())
     {
         auto vec2 = (*first)->getAdjSet(); // edges of source vertex
@@ -378,7 +376,7 @@ void Map::removeNotConnectedNodes()
         {
             if ((*second).getDest()->getInfo()->getIdNode() == (*first)->getInfo()->getIdNode())
             {
-                //cout << "here2" << endl;
+                cout << "here2" << endl;
                 map->removeEdge((*first)->getInfo(), (*first)->getInfo());
             }
             ++second;
@@ -389,11 +387,12 @@ void Map::removeNotConnectedNodes()
     vec = map->getVertexSet();
     first = vec.begin();
 
+    // removes nodes that don't are not connected to
     while (first != vec.end())
     {
         if ((*first)->getAdjSet().size() == 0)
         {
-            //cout << "here3" << endl;
+            //cout << "here4" << endl;
             map->removeVertex((*first)->getInfo());
         }
         ++first;

@@ -12,6 +12,8 @@
 std::string mapOption = "";
 Map *map = new Map();
 
+static state_t state = START;
+
 int startMenu()
 {
     mainMenu();
@@ -39,29 +41,31 @@ int mainMenu()
         switch (option)
         {
         case 0:
-            if (map->getGraphViewer() != NULL)
+            if (state != START)
                 map->closeGraphViewer();
             std::cout << "\nA sair do programa...\n\n";
             break;
         case 1:
-            if (!validateMapChoice())
+            if (state == START)
             {
                 listAvailableMaps();
-                if (mapOption != "")
+                if (state == MAP)
                     map->loadMap(mapOption);
             }
             break;
         case 2:
-            if (validateMapChoice())
-            {
+            if (state != START)
                 dataAreaMenu();
-            }
+            else
+                printMapInstruction();
             break;
         case 3:
-            if (validateMapChoice())
-            {
+            if (state == VIEW)
                 showPathsMenu();
-            }
+            else if (state == START)
+                printMapInstruction();
+            else
+                printPointInstruction();
             break;
         default:
             break;
@@ -180,24 +184,24 @@ void listAvailableMaps()
 
     if (option != 0)
     {
+        state = MAP;
         mapOption = maps.at(option - 1);
         std::cout << "\n -> Escolhido Mapa ' " << maps.at(option - 1) << " ' ...\n";
     }
 }
 
-bool validateMapChoice()
+void printMapInstruction()
 {
-    if (mapOption == "")
-    {
-        std::cout << "\n---------------------------------\n\n";
-        std::cout << "\nEscolha um Mapa antes de começar!\n\n";
-        std::cout << "\n---------------------------------\n\n";
-        return false;
-    }
-    else
-    {
-        return true;
-    }
+    std::cout << "\n---------------------------------\n";
+    std::cout << "Escolha um mapa antes de começar!";
+    std::cout << "\n---------------------------------\n\n";
+}
+
+void printPointInstruction()
+{
+    std::cout << "\n----------------------------------------\n";
+    std::cout << "Defina todos os pontos antes de avançar!";
+    std::cout << "\n----------------------------------------\n\n";
 }
 
 void listAvailableLogisticPoints(std::string pointType)
@@ -206,41 +210,80 @@ void listAvailableLogisticPoints(std::string pointType)
     std::vector<int> showedNodes;
     Node *node;
 
+    /* New seed for rand() */
+    srand(time(NULL));
+
     std::cout << "\n------------- Pontos Disponíveis ------------\n";
     std::cout << "---------------------------------------------\n\n";
     std::cout << "0 - Voltar Atrás\n";
     std::cout << "----------------\n";
+    std::cout << "1 - Indicar Ponto\n";
 
     int counter = 0; // to choose 5 tags
 
-    for (unsigned int i = 0; i < map->getGraph()->getNumVertex(); i++) /* it only shows the first 5 for now ... */
+    /* it only shows 5 random nodes ... */
+    while (counter < 5)
     {
-        std::string tag = map->getGraph()->getVertexSet().at(i)->getInfo()->getTag();
-        node = map->getGraph()->getVertexSet().at(i)->getInfo();
+        int randomNumber = rand() % map->getGraph()->getNumVertex();
+
+        std::string tag = map->getGraph()->getVertexSet().at(randomNumber)->getInfo()->getTag();
+        node = map->getGraph()->getVertexSet().at(randomNumber)->getInfo();
 
         if (isTagLogisticPoint(tag))
         {
-            std::cout << counter + 1 << " - " << node->getIdNode() << std::endl;
-            showedNodes.push_back(i);
+            std::cout << counter + 2 << " - " << node->getIdNode() << std::endl;
+            showedNodes.push_back(randomNumber);
             counter++;
         }
-
-        if (counter == 5)
-            break;
     }
 
+    std::cout << "...\n";
     std::cout << "\n---------------------------------------------\n\n";
     std::cout << "Opção: ";
     std::cin >> option;
 
     if (option != 0)
     {
-        node = map->getGraph()->getVertexSet().at(showedNodes.at(option - 1))->getInfo();
+        if (option == 1)
+        {
+            std::cout << "\n----------------\n";
+            std::cout << "Ponto pretendido: ";
+            std::cin >> option;
+            std::cout << "----------------\n";
 
-        if (pointType == "garage")
-            map->setGarage(node);
-        else if (pointType == "warehouse")
+            node = map->findNode(option);
+
+            if (node == NULL)
+            {
+                std::cout << "\n---------------------------------------------\n";
+                std::cout << "O ponto indicado não existe, tente novamente!\n";
+                std::cout << "---------------------------------------------\n";
+                return;
+            }
+        }
+        else
+        {
+            node = map->getGraph()->getVertexSet().at(showedNodes.at(option - 1))->getInfo();
+        }
+
+        if (pointType == "warehouse")
+        {
             map->setWarehouse(node);
+
+            if (state == END_POINT)
+                state = VIEW;
+            else
+                state = INIT_POINT;
+        }
+        else if (pointType == "garage")
+        {
+            map->setGarage(node);
+
+            if (state == INIT_POINT)
+                state = VIEW;
+            else
+                state = END_POINT;
+        }
 
         std::cout << "\n -> Escolhido Ponto ' " << node->getIdNode() << " ' -> " << pointType << " ...\n";
     }

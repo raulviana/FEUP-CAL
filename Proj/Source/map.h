@@ -14,7 +14,7 @@
 class Map
 {
 private:
-    Graph<Node *> *map = (Graph<Node *> *)malloc(4096);
+    Graph<Node *> *map;
     GraphViewer *gv;
     std::vector<Delivery *> deliveries;
     Node *warehouse;
@@ -32,7 +32,7 @@ public:
     void loadTags(std::string filename);
     void loadDeliveries(std::string filename);
     Node *findNode(int idNode);
-    void removeNotConnectedNodes();
+    void removeDisconnectedNodes();
 
     Graph<Node *> *getGraph() const;
     GraphViewer *getGraphViewer();
