@@ -12,16 +12,16 @@ class Delivery
 {
 private:
     std::string recipientName;
-    double contentValue;
-    double volume;
+    int contentValue;
+    int volume;
     Node *node;
     int invoiceNumber;
 
 public:
-    Delivery(std::string recipientName, double contentValue, double volume, Node *node, int invoiceNumber);
+    Delivery(std::string recipientName, int contentValue, int volume, Node *node, int invoiceNumber);
     std::string getRecipientName();
-    double getContentValue();
-    double getVolume();
+    int getContentValue();
+    int getVolume();
     Node *getNode();
     int getInvoiceNumber();
 };

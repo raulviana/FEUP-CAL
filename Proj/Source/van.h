@@ -10,21 +10,22 @@
 #include "delivery.h"
 #include "map.h"
 
-class Van
-{
-private:
-    std::vector<Delivery *> deliveries;
+class Van{
+    private:
+    std::vector<Delivery*> deliveries;
     int maxVol;
 
 public:
     Van();
-    Van(std::vector<Delivery *> deliveries);
-    std::vector<Delivery *> getDeliveries();
+    Van(std::vector<Delivery*> deliveries);
+    std::vector<Delivery*> getDeliveries();
+    void addDelivery(Delivery* delivery);
     int getMaxVol();
     void setMaxVol();
-
+    std::vector<Van*> calcVans();
     void addDelivery(Delivery *delivery);
     std::vector<Van *> calcVans();
+    vector<Delivery*> distributingDeliverires(int maxVol, vector<Delivery*> deliveries);
 };
 
 #endif /* VAN_H_ */

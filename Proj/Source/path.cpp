@@ -1,7 +1,7 @@
 #include <algorithm>
 
 #include "path.h"
-
+#include "2opt.h"
 /*
  * ==============================================================================================
  * 1st Iteration - 1 van with unlimited storage | starting point not the same as the ending point
@@ -50,20 +50,48 @@ void pathOfVan(Map *map)
     }
     allNodes.push_back(garage);
 
+
+    cout << "ordered " << nodesOrdered.size() - 1 << " = " << nodesOrdered.at(nodesOrdered.size() - 1)->getIdNode() << endl;
+
     for (unsigned int i = 0; i < allNodes.size(); i++)
     {
         if (i != 0)
             std::cout << " -> ";
         std::cout << i << "|" << allNodes.at(i)->getIdNode();
     }
-
     std::cout << endl;
+    
+    // std::vector<Node *> res = graph->bfs(warehouse);
 
-    map->viewPath(&allNodes);
+    /*if (warehouse->getIdNode() != garage->getIdNode())
+    {
+        if (find(res.begin(), res.end(), garage) == res.end())
+        {
+            cout << "Garage can not be reached from the warehouse!\n";
+        }
+    }*/
+
+    // isReachable(res, map->getDeliveries());
+    //single source diijktra
+    //shortest path
+    //opt
+    //...
 }
 
 /*
- * =========================================================================================================
- * 2nd Iteration - multiple vans with limited storage | starting point might be the same as the ending point
- * =========================================================================================================
- */
+void isReachable(std::vector<Node *> res, std::vector<Delivery *> deliveries)
+{
+    for (auto i = 0; i < deliveries.size(); i++)
+    {
+        if (find(res.begin(), res.end(), deliveries.at(i)->getNode()) == res.end())
+        {
+            cout << "Delivery " << deliveries.at(i)->getInvoiceNumber()
+                 << " in node " << deliveries.at(i)->getNode()->getIdNode()
+                 << " cannot be reached from warehouse!" << endl;
+        }
+        else
+        {
+            cout << "Reachable\n";
+        }
+    }
+}*/

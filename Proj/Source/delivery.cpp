@@ -1,6 +1,6 @@
 #include "delivery.h"
 
-Delivery::Delivery(std::string recipientName, double contentValue, double volume, Node *node, int invoiceNumber)
+Delivery::Delivery(std::string recipientName, int contentValue, int volume, Node *node, int invoiceNumber)
 {
     this->recipientName = recipientName;
     this->contentValue = contentValue;
@@ -14,12 +14,12 @@ std::string Delivery::getRecipientName()
     return recipientName;
 }
 
-double Delivery::getContentValue()
+int Delivery::getContentValue()
 {
     return contentValue;
 }
 
-double Delivery::getVolume()
+int Delivery::getVolume()
 {
     return volume;
 }
