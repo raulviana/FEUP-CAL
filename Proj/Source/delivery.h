@@ -19,7 +19,6 @@ private:
 
 public:
     Delivery(std::string recipientName, double contentValue, double volume, Node *node, int invoiceNumber);
-    ~Delivery();
     std::string getRecipientName();
     double getContentValue();
     double getVolume();

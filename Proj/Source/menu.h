@@ -6,12 +6,17 @@
 
 #include <string>
 
+#include "delivery.h"
+
 enum state_t {START, MAP, INIT_POINT, END_POINT, VIEW};
 
 int startMenu();
 int mainMenu();
 int dataAreaMenu();
 int showPathsMenu();
+int tagMenu();
+void listDeliveries();
+void listAvailableTags(std::string tag);
 void listAvailableMaps();
 void printMapInstruction();
 void printPointInstruction();

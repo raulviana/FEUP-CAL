@@ -8,12 +8,12 @@ smartDelivery: $(OBJECTS)
 	@g++ $(CFLAGS) -pedantic $(OBJECTS) -o smartDelivery
 
 main.o: menu.h map.h
-menu.o: menu.h
+menu.o: menu.h map.h path.h delivery.h
 connection.o: connection.h 
 graphviewer.o: graphviewer.h connection.h  edgetype.h
 map.o: map.h  graphviewer.h graph.h node.h delivery.h
 node.o: node.h
-delivery.o: delivery.h
+delivery.o: delivery.h node.h
 path.o: path.h map.h 2opt.h
 2opt.o: 2opt.h graph.h
 

@@ -599,7 +599,6 @@ vector<T> Graph<T>::getPath(const T &origin, const T &dest)
 
     for (; v != nullptr; v = v->path)
     {
-        std::cout << "here" << endl;
         res.push_back(v->info);
     }
 

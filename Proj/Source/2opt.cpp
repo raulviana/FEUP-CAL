@@ -12,10 +12,12 @@ Two_Opt::Two_Opt(Graph<Node *> *graph)
 vector<Node *> Two_Opt::performImprovement(vector<Node *> visitOrder)
 {
     double bestWeight;
+
     if ((bestWeight = calcPathWeight(visitOrder)) == 0)
     {
         bestWeight = INF;
     }
+
     vector<Node *> bestVisitOrder = visitOrder;
     vector<Node *> bbb = visitOrder;
 
@@ -42,12 +44,6 @@ vector<Node *> Two_Opt::performImprovement(vector<Node *> visitOrder)
             for (u_int k = i + 1; k <= numNodesForSwap; k++)
             {
                 visitOrder = twoOptSwap(bestVisitOrder, i, k);
-                std::cout << "swapped\n";
-
-                for (unsigned int j = 0; j < visitOrder.size(); j++)
-                {
-                    std::cout << "node " << j << " = " << visitOrder.at(j)->getIdNode() << endl;
-                }
 
                 if (!isVisitOrderValid(visitOrder))
                 {
@@ -56,35 +52,23 @@ vector<Node *> Two_Opt::performImprovement(vector<Node *> visitOrder)
                 }
 
                 visitOrderWeight = calcPathWeight(visitOrder);
-                cout << "before swap or not weight = " << visitOrderWeight << endl;
 
                 if (visitOrderWeight < bestWeight)
                 {
-
-                    std::cout << "i'm better:\n";
-                    for (unsigned int j = 0; j < visitOrder.size(); j++)
-                    {
-                        std::cout << "better node " << j << " = " << visitOrder.at(j)->getIdNode() << endl;
-                    }
-                    cout << "old weight = " << bestWeight << endl;
-                    cout << "beter weight = " << visitOrderWeight << endl;
-                    std::cout << endl;
-
-                    if (visitOrderWeight != 0)
-                    {
-                        bestWeight = visitOrderWeight;
-                        bbb = visitOrder;
-                    }
+                    bestWeight = visitOrderWeight;
+                    bbb = visitOrder;
                 }
             }
         }
         iterations++;
     }
+
     if (bestWeight == INF)
     {
         vector<Node *> error;
         return error;
     }
+    
     return bbb;
 }
 
@@ -117,7 +101,6 @@ double Two_Opt::calcPathWeight(vector<Node *> visitOrder)
         }
     }
 
-    cout << "Weight = " << weight << endl;
     return weight;
 }
 
@@ -129,14 +112,9 @@ bool Two_Opt::isVisitOrderValid(vector<Node *> visitOrder)
 
         if (find(res.begin(), res.end(), visitOrder[i + 1]) == res.end())
         {
-            /*cout << "Delivery " << deliveries.at(i)->getInvoiceNumber()
-                 << " in node " << deliveries.at(i)->getNode()->getIdNode()
-                 << " cannot be reached from the warehouse!" << endl;*/
-            std::cout << "Not Reachable :(\n";
-            return false;
+            return false; //not reacheable
         }
     }
 
-    std::cout << "Reachable aqui :o\n";
     return true;
 }

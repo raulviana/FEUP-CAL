@@ -378,18 +378,23 @@ void Map::loadDeliveries(std::string filename)
         recipientName = line.substr(0, it);
         line.erase(0, it + 2);
 
+        cout << "stod\n";
+
         it = line.find(",");
         contentValue = stod(line.substr(0, it));
         line.erase(0, it + 2);
 
+        cout << "stoi1\n";
         it = line.find(",");
         volume = stod(line.substr(0, it));
         line.erase(0, it + 2);
 
+        cout << "stoi2\n";
         it = line.find(",");
         idNode = stoi(line.substr(0, it));
         line.erase(0, it + 2);
 
+        cout << "stoi3\n";
         it = line.find(",");
         invoiceNumber = stoi(line.substr(0, it));
 
@@ -437,7 +442,6 @@ void Map::removeDisconnectedNodes()
         {
             if ((*second).getDest()->getInfo()->getIdNode() == (*first)->getInfo()->getIdNode())
             {
-                cout << "here2" << endl;
                 map->removeEdge((*first)->getInfo(), (*first)->getInfo());
             }
             ++second;
@@ -453,7 +457,6 @@ void Map::removeDisconnectedNodes()
     {
         if ((*first)->getAdjSet().size() == 0)
         {
-            //cout << "here4" << endl;
             map->removeVertex((*first)->getInfo());
         }
         ++first;
@@ -464,7 +467,6 @@ void Map::removeExtraEdges()
 {
     auto vs = map->getVertexSet();
     auto v = vs.begin();
-    int counter = 1;
 
     // removes edges that go from a certain node to the same (self relation)
     while (v != vs.end())
@@ -480,8 +482,6 @@ void Map::removeExtraEdges()
             {
                 if ((*e).getDest()->getInfo()->getIdNode() == (*e2).getDest()->getInfo()->getIdNode())
                 {
-                    cout << counter << endl;
-                    counter++;
                     map->removeEdge((*v)->getInfo(), (*e2).getDest()->getInfo());
                 }
                 ++e2;
@@ -505,6 +505,11 @@ GraphViewer *Map::getGraphViewer()
 std::vector<Delivery *> Map::getDeliveries() const
 {
     return deliveries;
+}
+
+void Map::addDelivery(Delivery* del)
+{
+    this->deliveries.push_back(del);
 }
 
 Node *Map::getWarehouse()

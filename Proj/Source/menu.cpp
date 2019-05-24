@@ -86,9 +86,9 @@ int dataAreaMenu()
         std::cout << "-------------------------------------------\n\n";
         std::cout << "0 - Voltar Atrás\n";
         std::cout << "----------------\n";
-        std::cout << "1 - Definir Local Inicial (depósito)\n";
-        std::cout << "2 - Definir Local Final (garagem)\n";
-        std::cout << "3 - Definir Pontos de Entrega\n\n";
+        std::cout << "1 - Local Inicial (armazém)\n";
+        std::cout << "2 - Local Final (garagem)\n";
+        std::cout << "3 - Pontos de Entrega\n\n";
         std::cout << "-------------------------------------------\n\n";
 
         std::cout << "Opção: ";
@@ -99,12 +99,13 @@ int dataAreaMenu()
         case 0:
             break;
         case 1:
-            listAvailableLogisticPoints("warehouse");
+            listAvailableLogisticPoints("armazém");
             break;
         case 2:
-            listAvailableLogisticPoints("garage");
+            listAvailableLogisticPoints("garagem");
             break;
         case 3:
+            tagMenu();
             break;
         default:
             break;
@@ -125,8 +126,8 @@ int showPathsMenu()
         std::cout << "--------------------------------------------\n\n";
         std::cout << "0 - Voltar Atrás\n";
         std::cout << "----------------\n";
-        std::cout << "1 - Percursos de Todas as Carrinhas\n";
-        std::cout << "2 - Percurso de uma Determinada Carrinha\n\n";
+        std::cout << "1 - Percurso de uma Carrinha com Carga Ilimitada (1ª Iteração)\n";
+        std::cout << "2 - Percurso de uma Determinada Carrinha (de um conjunto de carrinhas) com Carga Limitada (2ª Iteração)\n\n";
         std::cout << "--------------------------------------------\n\n";
 
         std::cout << "Opção: ";
@@ -150,6 +151,149 @@ int showPathsMenu()
     map->setGraphViewerDefaultAppearance();
 
     return 0;
+}
+
+int tagMenu()
+{
+    int option;
+
+    do
+    {
+        std::cout << "\n------------ Pontos de Entrega ------------\n";
+        std::cout << "-------------------------------------------\n\n";
+        std::cout << "0 - Voltar Atrás\n";
+        std::cout << "----------------\n";
+        std::cout << "1 - Listar Encomendas\n";
+        std::cout << "2 - Adicionar Encomenda\n";
+        std::cout << "\n--------------------------------------------\n\n";
+
+        std::cout << "Opção: ";
+        std::cin >> option;
+
+        switch (option)
+        {
+        case 0:
+            break;
+        case 1:
+            std::cout << "\n-----------------------------------------\n\n";
+
+            for (unsigned int i = 0; i < map->getDeliveries().size(); i++)
+            {
+                std::cout << i + 1 << " - " << map->getDeliveries().at(i)->getNode()->getIdNode() << " ("
+                          << map->getDeliveries().at(i)->getRecipientName() << ")" << std::endl;
+            }
+            std::cout << "\n-----------------------------------------\n";
+            break;
+        case 2:
+            listDeliveries();
+            break;
+        default:
+            break;
+        }
+
+    } while (option != 0);
+
+    return 0;
+}
+
+void listDeliveries()
+{
+    int option;
+    std::vector<string> tags = {"shop=department_store", "shop=variety_store", "shop=supermarket",
+                                "shop=doityourself", "shop=convenience", "shop=clothes",
+                                "shop=hardware", "shop=furniture", "shop=eletronics",
+                                "shop=mobile_phone", "shop=shoes", "shop=alcohol"};
+
+    do
+    {
+        std::cout << "\n------------ Tags Disponíveis ------------\n";
+        std::cout << "------------------------------------------\n\n";
+        std::cout << "0 - Voltar Atrás\n";
+        std::cout << "----------------\n";
+
+        for (unsigned int i = 0; i < tags.size(); i++)
+        {
+            std::cout << i + 1 << " - " << tags.at(i) << std::endl;
+        }
+
+        std::cout << "\n---------------------------------------------\n\n";
+        std::cout << "Opção: ";
+        std::cin >> option;
+
+        if (option != 0)
+            listAvailableTags(tags.at(option - 1));
+
+    } while (option != 0);
+}
+
+void listAvailableTags(std::string tag)
+{
+    int option;
+    int counter = 0; // to choose 5 tags
+    std::vector<int> showedNodes;
+    Node *node;
+
+    /* New seed for rand() */
+    srand(time(NULL));
+
+    std::cout << "\n----------- " << tag << " ----------\n\n";
+    std::cout << "0 - Voltar Atrás\n";
+    std::cout << "----------------\n";
+
+    /* it only shows 5 random nodes ... */
+    while (counter < 5)
+    {
+        int randomNumber = rand() % map->getGraph()->getNumVertex();
+
+        std::string newTag = map->getGraph()->getVertexSet().at(randomNumber)->getInfo()->getTag();
+        node = map->getGraph()->getVertexSet().at(randomNumber)->getInfo();
+
+        if (tag == newTag)
+        {
+            std::cout << counter + 1 << " - " << node->getIdNode() << std::endl;
+            showedNodes.push_back(node->getIdNode());
+            counter++;
+        }
+    }
+
+    std::cout << "...\n";
+    std::cout << "\n---------------------------------------------\n\n";
+    std::cout << "Opção: ";
+    std::cin >> option;
+
+    if (option != 0)
+    {
+        node = map->findNode(showedNodes.at(option - 1));
+
+        std::string recipientName;
+        std::cout << "\n--------------------\n";
+        std::cout << "Nome do Destinatário: ";
+        std::cin >> recipientName;
+        std::cout << "--------------------\n";
+
+        double contentValue;
+        std::cout << "\n-----\n";
+        std::cout << "Valor: ";
+        std::cin >> contentValue;
+        std::cout << "-----\n";
+
+        double volume;
+        std::cout << "\n------\n";
+        std::cout << "Volume: ";
+        std::cin >> volume;
+        std::cout << "------\n";
+
+        int invoiceNumber;
+        std::cout << "\n----------------\n";
+        std::cout << "Número do Pedido: ";
+        std::cin >> invoiceNumber;
+        std::cout << "----------------\n";
+
+        Delivery *del = new Delivery(recipientName, contentValue, volume, node, invoiceNumber);
+        map->addDelivery(del);
+
+        std::cout << "\n -> Escolhido Ponto ' " << node->getIdNode() << " ' -> " << tag << " ...\n";
+    }
 }
 
 void listAvailableMaps()
@@ -209,6 +353,7 @@ void printPointInstruction()
 void listAvailableLogisticPoints(std::string pointType)
 {
     int option;
+    int counter = 0; // to choose 5 tags
     std::vector<int> showedNodes;
     Node *node;
 
@@ -221,7 +366,19 @@ void listAvailableLogisticPoints(std::string pointType)
     std::cout << "----------------\n";
     std::cout << "1 - Indicar Ponto\n";
 
-    int counter = 0; // to choose 5 tags
+    if (state == INIT_POINT)
+    {
+        std::cout << "2 - Armazém (" << map->getWarehouse()->getIdNode() << ")" << endl;
+        showedNodes.push_back(map->getWarehouse()->getIdNode());
+        counter++;
+    }
+
+    if (state == END_POINT)
+    {
+        std::cout << "2 - Garagem (" << map->getGarage()->getIdNode() << ")" << endl;
+        showedNodes.push_back(map->getGarage()->getIdNode());
+        counter++;
+    }
 
     /* it only shows 5 random nodes ... */
     while (counter < 5)
@@ -234,7 +391,7 @@ void listAvailableLogisticPoints(std::string pointType)
         if (isTagLogisticPoint(tag))
         {
             std::cout << counter + 2 << " - " << node->getIdNode() << std::endl;
-            showedNodes.push_back(randomNumber);
+            showedNodes.push_back(node->getIdNode());
             counter++;
         }
     }
@@ -246,6 +403,7 @@ void listAvailableLogisticPoints(std::string pointType)
 
     if (option != 0)
     {
+        /* 'escolher ponto' */
         if (option == 1)
         {
             std::cout << "\n----------------\n";
@@ -262,23 +420,21 @@ void listAvailableLogisticPoints(std::string pointType)
                 std::cout << "---------------------------------------------\n";
                 return;
             }
-        }
-        else
-        {
-            //if (isTagLogisticPoint(map->findNode(option)->getTag()))
-            //{
-            node = map->getGraph()->getVertexSet().at(showedNodes.at(option - 1))->getInfo();
-            /*} 
-            else
+
+            if (!isTagLogisticPoint(node->getTag()))
             {
                 std::cout << "\n---------------------------------\n";
                 std::cout << "O ponto indicado não é logístico!\n";
                 std::cout << "---------------------------------\n";
                 return;
-            }*/
+            }
+        }
+        else
+        {
+            node = map->findNode(showedNodes.at(option - 2));
         }
 
-        if (pointType == "warehouse")
+        if (pointType == "armazém")
         {
             map->setWarehouse(node);
 
@@ -287,7 +443,7 @@ void listAvailableLogisticPoints(std::string pointType)
             else
                 state = INIT_POINT;
         }
-        else if (pointType == "garage")
+        else if (pointType == "garagem")
         {
             map->setGarage(node);
 
