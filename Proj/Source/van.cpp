@@ -41,15 +41,16 @@ std::vector<Van *> Van::calcVans() {
   
 }
 
-vector<Delivery*> distributingDeliverires(int maxVol, vector<Delivery*> &deliveries) { 
+vector<Delivery*> distributingDeliverires(int maxVol, Map *map) { 
     int i, w; 
+    vector<Delivery*> deliveries = map->getDeliveries();
     vector<int> val;
-    for (auto ptr = deliveries.begin(); ptr != deliveries.end(); i++){
-      val.push_back(ptr->getVal());
+    for (auto i = 0; i < deliveries.size(); i++){
+      val.push_back(deliveries.at(i)->getContentValue());
     }
     vector<int> wt;
-    for (auto ptr = deliveries.begin(); ptr != deliveries.end(); i++){
-      val.push_back(ptr->getVol());
+    for (auto i = 0; i < deliveries.size();i++){
+      wt.push_back(deliveries.at(i)->getVolume());
     }
 
     int n = sizeof(val) / sizeof(val[0]);
@@ -70,8 +71,7 @@ vector<Delivery*> distributingDeliverires(int maxVol, vector<Delivery*> &deliver
   
     // stores the result of Knapsack 
     int res = K[n][w];     
-    cout << res << endl; 
-    vector<int> deliveries;
+    cout << res << endl;
       
     int vol = maxVol;
     vector<Delivery*> vanDeliveries;
@@ -96,9 +96,14 @@ vector<Delivery*> distributingDeliverires(int maxVol, vector<Delivery*> &deliver
     } 
 
     //percorre o vetor deliveries para retirar as emcoment«das que foram colocadas na carrinha
-    for(auto i = vanDeliveries.begin();i != vanDeliveries.end();i++){
-      if(find(vanDeliveries.begin(), vanDeliveries.end(),))
-    }
+    for (int i = 0; i < vanDeliveries.size(); i++){
+      Delivery *toRemove = vanDeliveries.at(i);
+    auto e = find(deliveries.begin(), deliveries.end(),
+                   [&toRemove](Delivery * j) { return j && (*j == toRemove); });
 
-    return vanDeliveries;
-} 
+    if (e != deliveries.end()) {
+      deliveries.erase(e);
+    }
+  }
+}
+

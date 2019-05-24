@@ -24,6 +24,7 @@ public:
     int getVolume();
     Node *getNode();
     int getInvoiceNumber();
+    bool operator==(Delivery &other);
 };
 
 #endif /* DELIVERY_H_ */

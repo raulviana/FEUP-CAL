@@ -33,3 +33,8 @@ int Delivery::getInvoiceNumber()
 {
     return invoiceNumber;
 }
+
+bool Delivery::operator==(Delivery &other){
+    if(this->getInvoiceNumber() == other.getInvoiceNumber()) return true;
+    else return false;
+}

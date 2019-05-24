@@ -26,6 +26,7 @@ public:
     void addDelivery(Delivery *delivery);
     std::vector<Van *> calcVans();
     vector<Delivery*> distributingDeliverires(int maxVol, vector<Delivery*> deliveries);
+    
 };
 
 #endif /* VAN_H_ */

@@ -135,6 +135,7 @@ void Map::loadNodesToGraphViewer()
         int currentY = Y - map->getVertexSet().at(i)->getInfo()->getY();
 
         gv->addNode(idNode, currentX, currentY);
+
     }
 }
 
