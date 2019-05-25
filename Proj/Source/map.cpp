@@ -20,9 +20,8 @@ void Map::loadMap(std::string mapName)
     std::string tagFile = "../Maps/" + mapName + "/T04_tags_" + mapName + ".txt";
     loadTags(tagFile);
 
-    //cout << "antes: " << map->getNumVertex() << endl;
     removeDisconnectedNodes();
-    //cout << "depois: " << map->getNumVertex() << endl;
+
     initGraphViewer();
     std::string deliveryFile = "../Maps/" + mapName + "/deliveries" + mapName + ".txt";
     loadDeliveries(deliveryFile);

@@ -16,7 +16,7 @@ void vanPath(Map *map, int vanIndex, bool firstIteration)
     Graph<Node *> *graph = map->getGraph();
     TwoOpt two(graph);
 
-    //join of all nodes given to make the path
+    // join of all nodes given to make the path
     std::vector<Node *> nodesUnordered;
     nodesUnordered.push_back(warehouse);
 
@@ -28,11 +28,21 @@ void vanPath(Map *map, int vanIndex, bool firstIteration)
     }
     else
     {
+        if (vanIndex < 0 && vanIndex >= map->getVans()->size())
+        {
+            std::cout << "\n\n--------------------------------\n";
+            std::cout << "Carrinha selecionada não existe!";
+            std::cout << "\n--------------------------------\n\n";
+            return;
+        }
         deliveries = map->getVans()->at(vanIndex)->getDeliveries();
     }
 
-    if (deliveries.empty()){
-        cout << "No deliveries to deliver. Add some before trying to viewww a path.\n";
+    if (deliveries.empty())
+    {
+        std::cout << "\n\n--------------------------------------------------------------\n";
+        std::cout << "Sem encomendas para entregar, adicione algumas para continuar!";
+        std::cout << "\n--------------------------------------------------------------\n\n";
         return;
     }
 
@@ -43,7 +53,7 @@ void vanPath(Map *map, int vanIndex, bool firstIteration)
 
     nodesUnordered.push_back(garage);
 
-    //Two-Opt Algorithm
+    // two-opt algorithm
     std::vector<Node *> nodesOrdered = two.twoOptAlgorithm(nodesUnordered);
     if (nodesOrdered.empty())
     {
@@ -51,7 +61,7 @@ void vanPath(Map *map, int vanIndex, bool firstIteration)
         return;
     }
 
-    //Path between warehouse, deliveries and garage ordered by two-opt algorithm
+    // path between warehouse, deliveries and garage ordered by two-opt algorithm
     std::vector<Node *> allNodes;
 
     for (unsigned int i = 0; i < nodesOrdered.size() - 1; i++)
@@ -69,8 +79,9 @@ void vanPath(Map *map, int vanIndex, bool firstIteration)
     }
     allNodes.push_back(garage);
 
-    //Van final path
-    cout << "\nPath :\n";
+    // van final path
+    cout << "\nPath:\n";
+    cout << "-----\n";
     for (unsigned int i = 0; i < allNodes.size(); i++)
     {
         if (i != 0)
@@ -80,15 +91,22 @@ void vanPath(Map *map, int vanIndex, bool firstIteration)
 
     std::cout << endl;
 
-    //List of Deliveries of van with index vanIndex
-    if (!firstIteration){
-        cout << "\nDeliveries of van " << vanIndex << ":\n";
+    // list of deliveries of van with index vanIndex
+    if (!firstIteration)
+    {
+        std::cout << "\n\n-----------------------------------------\n\n";
+        cout << "Carrinha: " << vanIndex + 1 << " | Capacidade: " << map->getVans()->at(vanIndex)->getMaxVol() << endl
+             << endl; // Carrinha: X | Capacidade: Y
 
-        for (unsigned int i = 0; i < deliveries.size(); i++){
-            std::cout << i + 1 << " - " << deliveries.at(i)->getNode()->getIdNode() << " ("
-                          << deliveries.at(i)->getRecipientName() << ")" << std::endl;
+        for (unsigned int i = 0; i < deliveries.size(); i++)
+        {
+            std::cout << i + 1 << " - "
+                      << "Destinatário: " << deliveries.at(i)->getNode()->getIdNode() << " (" // i - Destinatário: X | Volume: Y
+                      << deliveries.at(i)->getRecipientName() << ")"
+                      << " | Volume: " << deliveries.at(i)->getVolume() << std::endl;
         }
-        cout << endl;
+
+        std::cout << "\n-----------------------------------------\n\n";
     }
 
     map->viewPath(&allNodes);
@@ -102,7 +120,7 @@ void vanPath(Map *map, int vanIndex, bool firstIteration)
 
 void vanDeliveries(Map *map)
 {
-    vector<Delivery*> allDeliveries = *map->getDeliveries();
+    vector<Delivery *> allDeliveries = *map->getDeliveries();
 
     int i = 0;
     while (!allDeliveries.empty())

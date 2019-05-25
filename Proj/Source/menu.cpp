@@ -60,7 +60,7 @@ int mainMenu()
                 printMapInstruction();
             break;
         case 3:
-            if (state == VIEW || state == VAN)
+            if (state == VIEW || state == VAN || map->getVans()->size() != 0)
                 showPathsMenu();
             else if (state == START)
                 printMapInstruction();
@@ -149,7 +149,6 @@ int showPathsMenu()
             break;
         case 1:
             vanPath(map, 0, true);
-            //ou poe-se um cin aqui a espera de um 0 e so depois é que volta ao defaulr
             break;
         case 2:
             map->setGraphViewerDefaultAppearance();
@@ -157,22 +156,25 @@ int showPathsMenu()
                 printVanInstruction();
             else
             {
-                std::cout << "\n-----------------------------------------\n\n";
+                std::cout << "\n------------- Carrinhas Usadas -------------\n";
+                std::cout << "--------------------------------------------\n\n";
 
                 for (unsigned int i = 0; i < map->getVans()->size(); i++)
                 {
-                    if (map->getVans()->at(i)->getDeliveries().size() != 0){
+                    if (map->getVans()->at(i)->getDeliveries().size() != 0)
+                    {
                         std::cout << i + 1 << " - " << map->getVans()->at(i)->getMaxVol() << " (capacidade)" << std::endl;
                         noDeliveries = false;
                     }
                 }
 
-                if (noDeliveries){
+                if (noDeliveries)
+                {
                     cout << "No deliveries to deliver. Add some before trying to viewww a path.\n";
                     break;
                 }
 
-                std::cout << "\n-----------------------------------------\n\n";
+                std::cout << "\n--------------------------------------------\n\n";
                 std::cout << "Opção: ";
                 std::cin >> vanChoice;
                 vanPath(map, vanChoice - 1, false);
@@ -378,13 +380,13 @@ int vanMenu()
 
     do
     {
-        std::cout << "\n--------------- Carrinhas ---------------\n";
-        std::cout << "------------------------------------------\n\n";
+        std::cout << "\n---------------- Carrinhas ----------------\n";
+        std::cout << "-------------------------------------------\n\n";
         std::cout << "0 - Voltar Atrás\n";
         std::cout << "----------------\n";
         std::cout << "1 - Listar Carrinhas\n";
         std::cout << "2 - Adicionar Carrinha\n";
-        std::cout << "\n--------------------------------------------\n\n";
+        std::cout << "\n-------------------------------------------\n\n";
 
         std::cout << "Opção: ";
         std::cin >> option;
@@ -394,13 +396,13 @@ int vanMenu()
         case 0:
             break;
         case 1:
-            std::cout << "\n-----------------------------------------\n\n";
+            std::cout << "\n-------------------------------------------\n\n";
 
             for (unsigned int i = 0; i < map->getVans()->size(); i++)
             {
                 std::cout << i + 1 << " - " << map->getVans()->at(i)->getMaxVol() << " (capacidade)" << std::endl;
             }
-            std::cout << "\n-----------------------------------------\n";
+            std::cout << "\n-------------------------------------------\n";
             break;
         case 2:
             addVanMenu();
@@ -455,7 +457,7 @@ void listAvailableLogisticPoints(std::string pointType)
     std::vector<int> showedNodes;
     Node *node;
 
-    /* New seed for rand() */
+    /* new seed for rand() */
     srand(time(NULL));
 
     std::cout << "\n------------- Pontos Disponíveis ------------\n";
@@ -464,16 +466,20 @@ void listAvailableLogisticPoints(std::string pointType)
     std::cout << "----------------\n";
     std::cout << "1 - Indicar Ponto\n";
 
-    if (state == INIT_POINT)
+    if (state == INIT_POINT || state == VIEW || state == VAN)
     {
         std::cout << "2 - Armazém (" << map->getWarehouse()->getIdNode() << ")" << endl;
         showedNodes.push_back(map->getWarehouse()->getIdNode());
         counter++;
     }
 
-    if (state == END_POINT)
+    if (state == END_POINT || state == VIEW || state == VAN)
     {
-        std::cout << "2 - Garagem (" << map->getGarage()->getIdNode() << ")" << endl;
+        if (state == INIT_POINT)
+            std::cout << "2 - Garagem (" << map->getGarage()->getIdNode() << ")" << endl;
+        else
+            std::cout << "3 - Garagem (" << map->getGarage()->getIdNode() << ")" << endl;
+
         showedNodes.push_back(map->getGarage()->getIdNode());
         counter++;
     }
@@ -538,6 +544,8 @@ void listAvailableLogisticPoints(std::string pointType)
 
             if (state == END_POINT)
                 state = VAN;
+            else if (state == VIEW)
+                state = VIEW;
             else
                 state = INIT_POINT;
         }
@@ -547,6 +555,8 @@ void listAvailableLogisticPoints(std::string pointType)
 
             if (state == INIT_POINT)
                 state = VAN;
+            else if (state == VIEW)
+                state = VIEW;
             else
                 state = END_POINT;
         }

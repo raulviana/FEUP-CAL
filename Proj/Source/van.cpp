@@ -72,15 +72,6 @@ void Van::distributeDeliveries(std::vector<Delivery *> &deliveries)
   int res = V[n][maxVol];
   std::vector<Delivery *> vanDeliveries;
 
-  for (unsigned int i = 0; i <= n; i++)
-  {
-    for (unsigned int j = 0; j <= w - 1; j++)
-      std::cout << V[i][j] << "     ";
-
-    std::cout << std::endl;
-  }
-  std::cout << res << std::endl;
-
   for (unsigned int i = n; i > 0 && res > 0; i--)
   {
     // if the result comes from val[i-1] + V[i-1][w-volumes[i-1]] it's included
@@ -94,11 +85,6 @@ void Van::distributeDeliveries(std::vector<Delivery *> &deliveries)
     }
   }
 
-  for (unsigned int i = 0; i < vanDeliveries.size(); i++)
-  {
-    std::cout << "invoice = " << vanDeliveries.at(i)->getInvoiceNumber() << " vol: " << vanDeliveries.at(i)->getVolume() << std::endl;
-  }
-
   // percorre o vetor deliveries para retirar as encomendas que foram colocadas na carrinha
   for (auto i = vanDeliveries.begin(); i != vanDeliveries.end(); i++)
   {
@@ -109,14 +95,6 @@ void Van::distributeDeliveries(std::vector<Delivery *> &deliveries)
       deliveries.erase(it);
     }
 
-    /*for (auto iter = deliveries.begin(); iter != deliveries.end(); iter++)
-    {
-      if ((*iter)->getInvoiceNumber() == (*i)->getInvoiceNumber())
-      {
-        deliveries.erase(iter);
-        break;
-      }
-    }*/
   }
 
   this->deliveries = vanDeliveries;
