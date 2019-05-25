@@ -112,7 +112,7 @@ bool Two_Opt::isVisitOrderValid(vector<Node *> visitOrder)
 
         if (find(res.begin(), res.end(), visitOrder[i + 1]) == res.end())
         {
-            return false; //not reacheable
+            return false; // not reacheable
         }
     }
 

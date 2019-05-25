@@ -8,7 +8,7 @@
 
 #include "delivery.h"
 
-enum state_t {START, MAP, INIT_POINT, END_POINT, VIEW};
+enum state_t {START, MAP, INIT_POINT, END_POINT, VAN, VIEW};
 
 int startMenu();
 int mainMenu();
@@ -18,8 +18,11 @@ int tagMenu();
 void listDeliveries();
 void listAvailableTags(std::string tag);
 void listAvailableMaps();
+int vanMenu();
+void addVanMenu();
 void printMapInstruction();
 void printPointInstruction();
+void printVanInstruction();
 void listAvailableLogisticPoints(std::string pointType);
 bool isTagLogisticPoint(std::string tag);
 bool isTagDeliveryPoint(std::string tag);

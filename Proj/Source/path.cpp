@@ -8,7 +8,7 @@
  * ==============================================================================================
  */
 
-void vanPath(Map *map)
+void vanPath(Map *map, int vanIndex, bool firstIteration)
 {
     Node *warehouse = map->getWarehouse();
     Node *garage = map->getGarage();
@@ -16,10 +16,21 @@ void vanPath(Map *map)
     Graph<Node *> *graph = map->getGraph();
     Two_Opt two(graph);
 
-    vector<Node *> nodesUnordered;
+    std::vector<Node *> nodesUnordered;
     nodesUnordered.push_back(warehouse);
 
-    for (unsigned int i = 0; i < map->getDeliveries()->size(); i++)
+    std::vector<Delivery *> deliveries;
+
+    if (firstIteration)
+    {
+        deliveries = *(map->getDeliveries());
+    }
+    else
+    {
+        deliveries = map->getVans()->at(vanIndex)->getDeliveries();
+    }
+
+    for (unsigned int i = 0; i < deliveries.size(); i++)
     {
         nodesUnordered.push_back(map->getDeliveries()->at(i)->getNode());
     }
@@ -29,7 +40,7 @@ void vanPath(Map *map)
     std::vector<Node *> nodesOrdered = two.performImprovement(nodesUnordered);
     if (nodesOrdered.empty())
     {
-        std::cout << "A single path can not be made starting in the warehouse and ending in the garage passing through all given delivery points..\n";
+        std::cout << "\nA single path can not be made starting in the warehouse and ending in the garage passing through all given delivery points...\n";
         return;
     }
 
@@ -58,6 +69,8 @@ void vanPath(Map *map)
     }
 
     std::cout << endl;
+
+    map->viewPath(&allNodes);
 }
 
 /*
@@ -68,7 +81,15 @@ void vanPath(Map *map)
 
 void vanDeliveries(Map *map)
 {
-    Van van;
-    vector<Delivery *> dels = van.calcVans(map);
-    std::cout << "deliveries size: " << dels.size() << endl;
+    int i = 0;
+    while (!map->getDeliveries()->empty())
+    {
+        if (i >= map->getVans()->size())
+        {
+            return;
+        }
+
+        map->getVans()->at(i)->calcVans(*(map->getDeliveries()));
+        i++;
+    }
 }

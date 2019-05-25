@@ -11,7 +11,7 @@ main.o: menu.h map.h
 menu.o: menu.h map.h path.h delivery.h
 connection.o: connection.h 
 graphviewer.o: graphviewer.h connection.h  edgetype.h
-map.o: map.h  graphviewer.h graph.h node.h delivery.h
+map.o: map.h  graphviewer.h graph.h node.h delivery.h van.h
 node.o: node.h
 delivery.o: delivery.h node.h
 path.o: path.h map.h 2opt.h van.h

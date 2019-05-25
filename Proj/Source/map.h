@@ -10,6 +10,7 @@
 #include "graph.h"
 #include "node.h"
 #include "delivery.h"
+#include "van.h"
 
 class Map
 {
@@ -20,6 +21,7 @@ private:
     Node *warehouse;
     Node *garage;
     std::vector<Node *> allNodes;
+    std::vector<Van *> vans;
 
 public:
     Map();
@@ -47,6 +49,8 @@ public:
     void setWarehouse(Node *warehouse);
     Node *getGarage();
     void setGarage(Node *garage);
+    std::vector<Van *> *getVans();
+    void addVan(Van *van);
 };
 
 void showLoadProgress(int counter, int number, std::string type);

@@ -4,7 +4,10 @@
 #include <climits>
 #include <algorithm>
 
-Van::Van(){};
+Van::Van(int maxVolume)
+{
+  this->maxVol = maxVolume;
+};
 
 Van::Van(std::vector<Delivery *> deliveries)
 {
@@ -32,16 +35,15 @@ void Van::addDelivery(Delivery *delivery)
   deliveries.push_back(delivery);
 }
 
-std::vector<Delivery *> Van::calcVans(Map *map)
+void Van::calcVans(std::vector<Delivery *> &deliveries)
 {
-  setMaxVol(40);
-  return distributeDeliveries(*map->getDeliveries()); // knapsack problem
+  distributeDeliveries(deliveries); // knapsack problem
 }
 
-vector<Delivery *> Van::distributeDeliveries(vector<Delivery *> &deliveries)
+void Van::distributeDeliveries(std::vector<Delivery *> &deliveries)
 {
   int w;
-  vector<int> volumes;
+  std::vector<int> volumes;
 
   for (auto del = deliveries.begin(); del != deliveries.end(); del++)
   {
@@ -60,7 +62,7 @@ vector<Delivery *> Van::distributeDeliveries(vector<Delivery *> &deliveries)
       if (i == 0 || w == 0)
         V[i][w] = 0;
       else if (volumes[i - 1] + V[i - 1][w - volumes.at(i - 1)] <= w)
-        V[i][w] = max(volumes.at(i - 1) + V[i - 1][w - volumes.at(i - 1)], V[i - 1][w]);
+        V[i][w] = std::max(volumes.at(i - 1) + V[i - 1][w - volumes.at(i - 1)], V[i - 1][w]);
       else
         V[i][w] = V[i - 1][w];
     }
@@ -68,16 +70,16 @@ vector<Delivery *> Van::distributeDeliveries(vector<Delivery *> &deliveries)
 
   // stores the result of the knapsack
   int res = V[n][maxVol];
-  vector<Delivery *> vanDeliveries;
+  std::vector<Delivery *> vanDeliveries;
 
   for (unsigned int i = 0; i <= n; i++)
   {
     for (unsigned int j = 0; j <= w - 1; j++)
       std::cout << V[i][j] << "     ";
 
-    std::cout << endl;
+    std::cout << std::endl;
   }
-  std::cout << res << endl;
+  std::cout << res << std::endl;
 
   for (unsigned int i = n; i > 0 && res > 0; i--)
   {
@@ -96,7 +98,7 @@ vector<Delivery *> Van::distributeDeliveries(vector<Delivery *> &deliveries)
 
   for (unsigned int i = 0; i < vanDeliveries.size(); i++)
   {
-    std::cout << "invoice = " << vanDeliveries.at(i)->getInvoiceNumber() << " vol: " << vanDeliveries.at(i)->getVolume() << endl;
+    std::cout << "invoice = " << vanDeliveries.at(i)->getInvoiceNumber() << " vol: " << vanDeliveries.at(i)->getVolume() << std::endl;
   }
 
   // percorre o vetor deliveries para retirar as encomendas que foram colocadas na carrinha
@@ -119,5 +121,5 @@ vector<Delivery *> Van::distributeDeliveries(vector<Delivery *> &deliveries)
     }*/
   }
 
-  return vanDeliveries;
+  this->deliveries = vanDeliveries;
 }

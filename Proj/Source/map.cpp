@@ -527,6 +527,16 @@ void Map::setGarage(Node *garage)
     this->garage = garage;
 }
 
+std::vector<Van *> *Map::getVans()
+{
+    return &vans;
+}
+
+void Map::addVan(Van *van)
+{
+    this->vans.push_back(van);
+}
+
 void showLoadProgress(int counter, int number, std::string type)
 {
     double percentage;
