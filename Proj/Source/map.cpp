@@ -135,7 +135,6 @@ void Map::loadNodesToGraphViewer()
         int currentY = Y - map->getVertexSet().at(i)->getInfo()->getY();
 
         gv->addNode(idNode, currentX, currentY);
-
     }
 }
 
@@ -379,23 +378,18 @@ void Map::loadDeliveries(std::string filename)
         recipientName = line.substr(0, it);
         line.erase(0, it + 2);
 
-        cout << "stod\n";
-
         it = line.find(",");
         contentValue = stod(line.substr(0, it));
         line.erase(0, it + 2);
 
-        cout << "stoi1\n";
         it = line.find(",");
         volume = stod(line.substr(0, it));
         line.erase(0, it + 2);
 
-        cout << "stoi2\n";
         it = line.find(",");
         idNode = stoi(line.substr(0, it));
         line.erase(0, it + 2);
 
-        cout << "stoi3\n";
         it = line.find(",");
         invoiceNumber = stoi(line.substr(0, it));
 
@@ -503,12 +497,12 @@ GraphViewer *Map::getGraphViewer()
     return gv;
 }
 
-std::vector<Delivery *> Map::getDeliveries() const
+std::vector<Delivery *> *Map::getDeliveries()
 {
-    return deliveries;
+    return &deliveries;
 }
 
-void Map::addDelivery(Delivery* del)
+void Map::addDelivery(Delivery *del)
 {
     this->deliveries.push_back(del);
 }

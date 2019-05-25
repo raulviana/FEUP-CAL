@@ -138,9 +138,10 @@ int showPathsMenu()
         case 0:
             break;
         case 1:
-            pathOfVan(map);
+            vanPath(map);
             break;
         case 2:
+            vanDeliveries(map);
             break;
         default:
             break;
@@ -177,10 +178,10 @@ int tagMenu()
         case 1:
             std::cout << "\n-----------------------------------------\n\n";
 
-            for (unsigned int i = 0; i < map->getDeliveries().size(); i++)
+            for (unsigned int i = 0; i < map->getDeliveries()->size(); i++)
             {
-                std::cout << i + 1 << " - " << map->getDeliveries().at(i)->getNode()->getIdNode() << " ("
-                          << map->getDeliveries().at(i)->getRecipientName() << ")" << std::endl;
+                std::cout << i + 1 << " - " << map->getDeliveries()->at(i)->getNode()->getIdNode() << " ("
+                          << map->getDeliveries()->at(i)->getRecipientName() << ")" << std::endl;
             }
             std::cout << "\n-----------------------------------------\n";
             break;

@@ -6,8 +6,9 @@
 
 #include "map.h"
 #include "2opt.h"
+#include "van.h"
 
-void pathOfVan(Map *map);
-void isReachable(std::vector<Node *> res, std::vector<Delivery *> deliveries);
+void vanPath(Map *map);
+void vanDeliveries(Map *map);
 
 #endif //PATH_H

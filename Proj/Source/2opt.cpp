@@ -25,7 +25,7 @@ vector<Node *> Two_Opt::performImprovement(vector<Node *> visitOrder)
     //Node* finishNode = visitOrder.at(visitOrder.size() - 1);
 
     // start and finish will not be included, since they have fixed positions in the visit order
-        u_int numNodesForSwap = visitOrder.size() - 2;
+    u_int numNodesForSwap = visitOrder.size() - 2;
 
     double lastBestWeight = -1;
     double visitOrderWeight;
@@ -38,9 +38,8 @@ vector<Node *> Two_Opt::performImprovement(vector<Node *> visitOrder)
             break;
 
         lastBestWeight = bestWeight;
-        cout << "algo_bestWeight = " << bestWeight << endl;
 
-        for (u_int i = 1; i <= numNodesForSwap-1 ; i++)
+        for (u_int i = 1; i <= numNodesForSwap - 1; i++)
         {
             for (u_int k = i + 1; k <= numNodesForSwap; k++)
             {
@@ -54,7 +53,7 @@ vector<Node *> Two_Opt::performImprovement(vector<Node *> visitOrder)
 
                 visitOrderWeight = calcPathWeight(visitOrder);
 
-                if (visitOrderWeight < bestWeight && visitOrderWeight!= 0)
+                if (visitOrderWeight < bestWeight && visitOrderWeight != 0)
                 {
                     bestWeight = visitOrderWeight;
                     bbb = visitOrder;
@@ -69,7 +68,7 @@ vector<Node *> Two_Opt::performImprovement(vector<Node *> visitOrder)
         vector<Node *> error;
         return error;
     }
-    
+
     return bbb;
 }
 

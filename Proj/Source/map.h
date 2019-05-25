@@ -41,8 +41,8 @@ public:
 
     Graph<Node *> *getGraph() const;
     GraphViewer *getGraphViewer();
-    std::vector<Delivery *> getDeliveries() const;
-    void addDelivery(Delivery* del);
+    std::vector<Delivery *> *getDeliveries();
+    void addDelivery(Delivery *del);
     Node *getWarehouse();
     void setWarehouse(Node *warehouse);
     Node *getGarage();
