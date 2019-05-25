@@ -84,15 +84,13 @@ void Van::distributeDeliveries(std::vector<Delivery *> &deliveries)
   for (unsigned int i = n; i > 0 && res > 0; i--)
   {
     // if the result comes from val[i-1] + V[i-1][w-volumes[i-1]] it's included
-    if (res == V[i - 1][maxVol])
-      continue;
-    else
+    if (res != V[i - 1][maxVol])
     {
       // this item is included
-      vanDeliveries.push_back(deliveries[i - 1]);
+      vanDeliveries.push_back(deliveries[i-1]);
 
       // its value is deducted
-      res = res - volumes[i - 1];
+      res -= volumes[i - 1];
     }
   }
 

@@ -7,17 +7,17 @@
 #include "graph.h"
 #include "node.h"
 
-class Two_Opt
+class TwoOpt
 {
 private:
     Graph<Node *> *graph;
 
 public:
-    Two_Opt(Graph<Node *> *graph);
-    vector<Node *> performImprovement(vector<Node *> visitOrder);
-    vector<Node *> twoOptSwap(vector<Node *> visitOrder, int i, int k) const;
-    double calcPathWeight(vector<Node *> visitOrder);
-    bool isVisitOrderValid(vector<Node *> visitOrder);
+    TwoOpt(Graph<Node *> *graph);
+    vector<Node *> twoOptAlgorithm(vector<Node *> existingPath);
+    vector<Node *> twoOptSwap(vector<Node *> existingPath, int i, int k) const;
+    double calcTotalWeight(vector<Node *> existingPath);
+    bool isPathValid(vector<Node *> existingPath);
 };
 
 #endif /* OPT_H_ */

@@ -127,6 +127,8 @@ int showPathsMenu()
 {
     int option;
     int vanChoice;
+    bool noDeliveries = true;
+    vanDeliveries(map);
 
     do
     {
@@ -155,13 +157,19 @@ int showPathsMenu()
                 printVanInstruction();
             else
             {
-                vanDeliveries(map);
                 std::cout << "\n-----------------------------------------\n\n";
 
                 for (unsigned int i = 0; i < map->getVans()->size(); i++)
                 {
-                    if (map->getVans()->at(i)->getDeliveries().size() != 0)
+                    if (map->getVans()->at(i)->getDeliveries().size() != 0){
                         std::cout << i + 1 << " - " << map->getVans()->at(i)->getMaxVol() << " (capacidade)" << std::endl;
+                        noDeliveries = false;
+                    }
+                }
+
+                if (noDeliveries){
+                    cout << "No deliveries to deliver. Add some before trying to viewww a path.\n";
+                    break;
                 }
 
                 std::cout << "\n-----------------------------------------\n\n";
