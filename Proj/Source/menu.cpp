@@ -234,6 +234,61 @@ int tagMenu()
     return 0;
 }
 
+int vanMenu()
+{
+    int option;
+
+    do
+    {
+        std::cout << "\n---------------- Carrinhas ----------------\n";
+        std::cout << "-------------------------------------------\n\n";
+        std::cout << "0 - Voltar Atrás\n";
+        std::cout << "----------------\n";
+        std::cout << "1 - Listar Carrinhas\n";
+        std::cout << "2 - Adicionar Carrinha\n";
+        std::cout << "\n-------------------------------------------\n\n";
+
+        std::cout << "Opção: ";
+        std::cin >> option;
+
+        switch (option)
+        {
+        case 0:
+            break;
+        case 1:
+            std::cout << "\n-------------------------------------------\n\n";
+
+            for (unsigned int i = 0; i < map->getVans()->size(); i++)
+            {
+                std::cout << i + 1 << " - " << map->getVans()->at(i)->getMaxVol() << " (capacidade)" << std::endl;
+            }
+            std::cout << "\n-------------------------------------------\n";
+            break;
+        case 2:
+            addVanMenu();
+            break;
+        default:
+            break;
+        }
+
+    } while (option != 0);
+
+    return 0;
+}
+
+void addVanMenu()
+{
+    int maxVol;
+    std::cout << "\n-----------------\n";
+    std::cout << "Capacidade Máxima: ";
+    std::cin >> maxVol;
+    std::cout << "-----------------\n";
+
+    Van *van = new Van(maxVol);
+    map->addVan(van);
+    state = VIEW;
+}
+
 void listDeliveries()
 {
     int option;
@@ -262,6 +317,46 @@ void listDeliveries()
             listAvailableTags(tags.at(option - 1));
 
     } while (option != 0);
+}
+
+void listAvailableMaps()
+{
+    int option;
+    std::vector<std::string> maps;
+
+    DIR *dirp = opendir("../Maps");
+    struct dirent *dp;
+
+    while ((dp = readdir(dirp)) != NULL)
+    {
+        if (strcmp(dp->d_name, ".") && strcmp(dp->d_name, ".."))
+        {
+            maps.push_back(dp->d_name);
+        }
+    }
+
+    closedir(dirp);
+
+    std::cout << "\n------------- Mapas Disponíveis -------------\n";
+    std::cout << "---------------------------------------------\n\n";
+    std::cout << "0 - Voltar Atrás\n";
+    std::cout << "----------------\n";
+
+    for (unsigned int i = 0; i < maps.size(); i++)
+    {
+        std::cout << i + 1 << " - " << maps.at(i) << std::endl;
+    }
+
+    std::cout << "\n---------------------------------------------\n\n";
+    std::cout << "Opção: ";
+    std::cin >> option;
+
+    if (option != 0)
+    {
+        state = MAP;
+        mapOption = maps.at(option - 1);
+        std::cout << "\n -> Escolhido Mapa ' " << maps.at(option - 1) << " ' ...\n";
+    }
 }
 
 void listAvailableTags(std::string tag)
@@ -332,122 +427,6 @@ void listAvailableTags(std::string tag)
 
         std::cout << "\n -> Escolhido Ponto ' " << node->getIdNode() << " ' -> " << tag << " ...\n";
     }
-}
-
-void listAvailableMaps()
-{
-    int option;
-    std::vector<std::string> maps;
-
-    DIR *dirp = opendir("../Maps");
-    struct dirent *dp;
-
-    while ((dp = readdir(dirp)) != NULL)
-    {
-        if (strcmp(dp->d_name, ".") && strcmp(dp->d_name, ".."))
-        {
-            maps.push_back(dp->d_name);
-        }
-    }
-
-    closedir(dirp);
-
-    std::cout << "\n------------- Mapas Disponíveis -------------\n";
-    std::cout << "---------------------------------------------\n\n";
-    std::cout << "0 - Voltar Atrás\n";
-    std::cout << "----------------\n";
-
-    for (unsigned int i = 0; i < maps.size(); i++)
-    {
-        std::cout << i + 1 << " - " << maps.at(i) << std::endl;
-    }
-
-    std::cout << "\n---------------------------------------------\n\n";
-    std::cout << "Opção: ";
-    std::cin >> option;
-
-    if (option != 0)
-    {
-        state = MAP;
-        mapOption = maps.at(option - 1);
-        std::cout << "\n -> Escolhido Mapa ' " << maps.at(option - 1) << " ' ...\n";
-    }
-}
-
-int vanMenu()
-{
-    int option;
-
-    do
-    {
-        std::cout << "\n---------------- Carrinhas ----------------\n";
-        std::cout << "-------------------------------------------\n\n";
-        std::cout << "0 - Voltar Atrás\n";
-        std::cout << "----------------\n";
-        std::cout << "1 - Listar Carrinhas\n";
-        std::cout << "2 - Adicionar Carrinha\n";
-        std::cout << "\n-------------------------------------------\n\n";
-
-        std::cout << "Opção: ";
-        std::cin >> option;
-
-        switch (option)
-        {
-        case 0:
-            break;
-        case 1:
-            std::cout << "\n-------------------------------------------\n\n";
-
-            for (unsigned int i = 0; i < map->getVans()->size(); i++)
-            {
-                std::cout << i + 1 << " - " << map->getVans()->at(i)->getMaxVol() << " (capacidade)" << std::endl;
-            }
-            std::cout << "\n-------------------------------------------\n";
-            break;
-        case 2:
-            addVanMenu();
-            break;
-        default:
-            break;
-        }
-
-    } while (option != 0);
-
-    return 0;
-}
-
-void addVanMenu()
-{
-    int maxVol;
-    std::cout << "\n-----------------\n";
-    std::cout << "Capacidade Máxima: ";
-    std::cin >> maxVol;
-    std::cout << "-----------------\n";
-
-    Van *van = new Van(maxVol);
-    map->addVan(van);
-    state = VIEW;
-}
-
-void printMapInstruction()
-{
-    std::cout << "\n\n---------------------------------\n";
-    std::cout << "Escolha um mapa antes de começar!";
-    std::cout << "\n---------------------------------\n\n";
-}
-
-void printPointInstruction()
-{
-    std::cout << "\n\n----------------------------------------\n";
-    std::cout << "Defina todos os pontos antes de avançar!";
-    std::cout << "\n----------------------------------------\n\n";
-}
-
-void printVanInstruction()
-{
-    std::cout << "\n\n-------------------------------------------------\n";
-    std::cout << "Adicione pelo menus uma carrinha antes de avançar!";
-    std::cout << "\n-------------------------------------------------\n\n";
 }
 
 void listAvailableLogisticPoints(std::string pointType)
@@ -563,6 +542,27 @@ void listAvailableLogisticPoints(std::string pointType)
 
         std::cout << "\n -> Escolhido Ponto ' " << node->getIdNode() << " ' -> " << pointType << " ...\n";
     }
+}
+
+void printMapInstruction()
+{
+    std::cout << "\n\n---------------------------------\n";
+    std::cout << "Escolha um mapa antes de começar!";
+    std::cout << "\n---------------------------------\n\n";
+}
+
+void printPointInstruction()
+{
+    std::cout << "\n\n----------------------------------------\n";
+    std::cout << "Defina todos os pontos antes de avançar!";
+    std::cout << "\n----------------------------------------\n\n";
+}
+
+void printVanInstruction()
+{
+    std::cout << "\n\n-------------------------------------------------\n";
+    std::cout << "Adicione pelo menus uma carrinha antes de avançar!";
+    std::cout << "\n-------------------------------------------------\n\n";
 }
 
 bool isTagLogisticPoint(std::string tag)

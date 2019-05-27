@@ -1,8 +1,8 @@
-#include "van.h"
-
 #include <vector>
 #include <climits>
 #include <algorithm>
+
+#include "van.h"
 
 Van::Van(int maxVolume)
 {
@@ -15,11 +15,6 @@ Van::Van(std::vector<Delivery *> deliveries)
   this->maxVol = INT_MAX;
 }
 
-std::vector<Delivery *> Van::getDeliveries()
-{
-  return deliveries;
-}
-
 int Van::getMaxVol()
 {
   return maxVol;
@@ -28,6 +23,11 @@ int Van::getMaxVol()
 void Van::setMaxVol(int volume)
 {
   this->maxVol = volume;
+}
+
+std::vector<Delivery *> Van::getDeliveries()
+{
+  return deliveries;
 }
 
 void Van::addDelivery(Delivery *delivery)
@@ -78,7 +78,7 @@ void Van::distributeDeliveries(std::vector<Delivery *> &deliveries)
     if (res != V[i - 1][maxVol])
     {
       // this item is included
-      vanDeliveries.push_back(deliveries[i-1]);
+      vanDeliveries.push_back(deliveries[i - 1]);
 
       // its value is deducted
       res -= volumes[i - 1];
@@ -94,7 +94,6 @@ void Van::distributeDeliveries(std::vector<Delivery *> &deliveries)
     {
       deliveries.erase(it);
     }
-
   }
 
   this->deliveries = vanDeliveries;

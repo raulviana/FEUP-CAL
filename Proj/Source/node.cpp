@@ -24,6 +24,11 @@ void Node::setTag(std::string tag)
     this->tag = tag;
 }
 
+std::string Node::getTag()
+{
+    return this->tag;
+}
+
 int Node::getIdNode()
 {
     return this->idNode;
@@ -37,11 +42,6 @@ double Node::getX()
 double Node::getY()
 {
     return this->Y;
-}
-
-std::string Node::getTag()
-{
-    return this->tag;
 }
 
 double Node::getDistanceToAnotherNode(Node *node)
