@@ -16,13 +16,13 @@ private:
 
 public:
     /**
-     * @brief Construct a new Node object
+     * @brief Construct a new Node
      * 
      */
     Node();
 
     /**
-     * @brief Construct a new Node object
+     * @brief Construct a new Node
      * 
      * @param idNode Unique ID of each node
      * @param X X-Position of each node
@@ -40,7 +40,7 @@ public:
     void setNode(int idNode, double X, double Y);
 
     /**
-     * @brief Set the Tag object
+     * @brief Set the Tag
      * 
      * @param tag Tag of each node
      */

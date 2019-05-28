@@ -19,57 +19,56 @@ private:
 
 public:
     /**
-     * @brief Construct a new Delivery object
+     * @brief Construct a new Delivery
      * 
-     * @param recipientName 
-     * @param contentValue 
-     * @param volume 
-     * @param node 
-     * @param invoiceNumber 
+     * @param recipientName Name of the delivery's recipient
+     * @param contentValue Delivery's content value
+     * @param volume Delivery's volume
+     * @param node Node to deliver the delivery
+     * @param invoiceNumber Delivery's invoice number 
      */
     Delivery(std::string recipientName, int contentValue, int volume, Node *node, int invoiceNumber);
     
     /**
-     * @brief Get the Recipient Name object
+     * @brief Get the Recipient Name of a Delivery
      * 
-     * @return std::string 
+     * @return std::string Returns the delivery's recipient name
      */
     std::string getRecipientName();
 
     /**
-     * @brief Get the Content Value object
+     * @brief Get the Content Value of a Delivery
      * 
-     * @return int 
+     * @return int Returns the delivery's content value
      */
     int getContentValue();
 
     /**
-     * @brief Get the Volume object
+     * @brief Get the Volume of a Delivery
      * 
-     * @return int 
+     * @return int Returns the delivery's volume
      */
     int getVolume();
 
     /**
-     * @brief Get the Node object
+     * @brief Get the Node of a Delivery
      * 
-     * @return Node* 
+     * @return Node* Returns a pointer to the delivery's Node
      */
     Node *getNode();
 
     /**
-     * @brief Get the Invoice Number object
+     * @brief Get the Invoice Number of a Delivery
      * 
-     * @return int 
+     * @return int Returns the delivery's invoice number
      */
     int getInvoiceNumber();
 
     /**
-     * @brief 
+     * @brief Checks whether two deliveries are the same
      * 
-     * @param delivery 
-     * @return true 
-     * @return false 
+     * @param delivery Delivery to compare with
+     * @return True if deliveries' invoice number are the same, false otherwise
      */
     bool operator==(Delivery &delivery);
 };

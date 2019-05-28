@@ -19,7 +19,6 @@ void Map::loadMap(std::string mapName)
     removeExtraEdges();
     std::string tagFile = "../Maps/" + mapName + "/T04_tags_" + mapName + ".txt";
     loadTags(tagFile);
-
     removeDisconnectedNodes();
 
     initGraphViewer();
@@ -119,6 +118,8 @@ int Map::findEdge(Node *nodeB, Node *nodeE)
 void Map::closeGraphViewer()
 {
     gv->closeWindow();
+    delete(gv);
+    delete(map);
 }
 
 void Map::loadNodesToGraphViewer()

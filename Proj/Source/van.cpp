@@ -37,7 +37,7 @@ void Van::addDelivery(Delivery *delivery)
 
 void Van::calcVans(std::vector<Delivery *> &deliveries)
 {
-  distributeDeliveries(deliveries); // knapsack problem
+    distributeDeliveries(deliveries); // knapsack problem
 }
 
 void Van::distributeDeliveries(std::vector<Delivery *> &deliveries)

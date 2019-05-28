@@ -17,58 +17,58 @@ private:
 
 public:
     /**
-     * @brief Construct a new Van object
+     * @brief Construct a new Van
      * 
-     * @param maxVolume 
+     * @param maxVolume Van's maximum volume
      */
     Van(int maxVolume);
 
     /**
-     * @brief Construct a new Van object
+     * @brief Construct a new Van
      * 
-     * @param deliveries 
+     * @param deliveries Deliveries to attach to the van
      */
     Van(std::vector<Delivery *> deliveries);
 
     /**
-     * @brief Get the Max Vol object
+     * @brief Get the Max Volume
      * 
-     * @return int 
+     * @return int Van's maximum volume
      */
     int getMaxVol();
 
     /**
-     * @brief Set the Max Vol object
+     * @brief Set the Max Volume
      * 
-     * @param volume 
+     * @param volume Van's maximum volume
      */
     void setMaxVol(int volume);
 
     /**
-     * @brief Get the Deliveries object
+     * @brief Get the Deliveries of a Van
      * 
-     * @return std::vector<Delivery *> 
+     * @return std::vector<Delivery *> Return the vector of pointers to each of the Van's deliveries
      */
     std::vector<Delivery *> getDeliveries();
 
     /**
-     * @brief 
+     * @brief Add delivery to a Van's deliveries
      * 
-     * @param delivery 
+     * @param delivery Delivery to add
      */
     void addDelivery(Delivery *delivery);
 
     /**
-     * @brief 
+     * @brief Applies knapsack problem to the Van
      * 
-     * @param deliveries 
+     * @param deliveries Group of deliveries used
      */
     void calcVans(std::vector<Delivery *> &deliveries);
 
     /**
-     * @brief 
+     * @brief Knapsack problem
      * 
-     * @param deliveries 
+     * @param deliveries Group of deliveries used
      */
     void distributeDeliveries(std::vector<Delivery *> &deliveries);
 };

@@ -71,7 +71,6 @@ vector<Node *> TwoOpt::twoOptAlgorithm(vector<Node *> existingPath)
 
 vector<Node *> TwoOpt::twoOptSwap(vector<Node *> existingPath, int i, int k) const
 {
-    // swap the vector elements between the range [i,k]
     while (i < k)
     {
         std::swap(existingPath.at(i), existingPath.at(k));
@@ -109,7 +108,7 @@ bool TwoOpt::isPathValid(vector<Node *> existingPath)
 
         if (find(res.begin(), res.end(), existingPath[i + 1]) == res.end())
         {
-            return false; // not reacheable
+            return false; // not reachable
         }
     }
 

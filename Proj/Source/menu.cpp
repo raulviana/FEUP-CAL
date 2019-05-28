@@ -170,7 +170,7 @@ int showPathsMenu()
 
                 if (noDeliveries)
                 {
-                    cout << "No deliveries to deliver. Add some before trying to viewww a path.\n";
+                    cout << "No deliveries to deliver. Add some before trying to view a path!\n";
                     break;
                 }
 
