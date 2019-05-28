@@ -64,11 +64,11 @@ Raúl Viana - up201208089@fe.up.pt
 		- deliveriesViseu.txt
 
 	1.2 API
-    =======
+    	=======
 		- GraphViewerController.jar
 
 	1.3 Bibliotecas
-    ===============
+    	===============
 		- connection.h
         - graphviewer.h
 		- edgetype.h
