@@ -70,7 +70,7 @@ Raúl Viana - up201208089@fe.up.pt
 	1.3 Bibliotecas
     	===============
 		- connection.h
-        - graphviewer.h
+        	- graphviewer.h
 		- edgetype.h
 		- graph.h
 		- MutablePriorityQueue.h
@@ -80,5 +80,5 @@ Raúl Viana - up201208089@fe.up.pt
 
     -> Correr o programa em Linux
     -> Na raíz do projeto, aceder ao diretório "Source": cd Source
-	-> Executar o comando 'make'
+    -> Executar o comando 'make'
     -> Por fim, correr o programa da seguinte forma: ./smartDelivery
