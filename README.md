@@ -1,3 +1,8 @@
+
+Repository for the "Algorithms Conception and Analisis" [(**CAL**)](https://sigarra.up.pt/feup/pt/UCURR_GERAL.FICHA_UC_VIEW?pv_ocorrencia_id=399894) course
+
+
+
 # Smart Delivery
 
 ## Authors
